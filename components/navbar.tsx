@@ -36,11 +36,11 @@ export default async function Navbar() {
               Call
             </Button>
           </Link>
-          <Link href="/user/status">
+          {/* <Link href="/user/status">
             <Button variant="ghost" className="text-bold-text">
               Waiting Queue
             </Button>
-          </Link>
+          </Link> */}
 
           <div className="flex items-center justify-start gap-2 ml-1">
             <ModeToggle />
