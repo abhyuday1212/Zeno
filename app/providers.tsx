@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { SessionProvider } from "next-auth/react";
 import StoreProvider from "./StoreProvider";
 import { useTheme } from "next-themes";
+import SocketInitializer from "./SocketInitialiser";
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -19,16 +20,9 @@ export function Providers({ children }: ProvidersProps) {
         disableTransitionOnChange
       >
         <SessionProvider>
-          <div
-            // style={
-            //   {
-            //     "--sidebar-width": "240px",
-            //     "--sidebar-width-mobile": "240px",
-            //   } as React.CSSProperties
-            // }
-          >
-            {children}
-          </div>
+          <SocketInitializer>
+            <div>{children}</div>
+          </SocketInitializer>
         </SessionProvider>
       </ThemeProvider>
     </StoreProvider>

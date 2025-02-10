@@ -1,14 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 //Slices Imports
-import chatHistoryReducer from "./features/historySlice";
 import globalLineLoaderReducer from "./features/globalLineLoaderSlice";
+import socketReducer from "./features/socketSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      chatHistory: chatHistoryReducer,
       globalLineLoader: globalLineLoaderReducer,
+      socketContext: socketReducer,
     },
   });
 };

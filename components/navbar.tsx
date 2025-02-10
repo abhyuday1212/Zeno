@@ -7,6 +7,7 @@ import { Moon, Sun } from "lucide-react";
 import { auth } from "@/auth";
 import SignOut from "./signOut";
 import { ModeToggle } from "./mode-toggle";
+import { FaVideo } from "react-icons/fa";
 
 export default async function Navbar() {
   // const [open, setOpen] = useState(false);
@@ -64,7 +65,7 @@ export default async function Navbar() {
           href={session ? "/user/home" : "/"}
           className="flex items-center space-x-2"
         >
-          <Printer className="h-6 w-6 text-bold-text" />
+          <FaVideo className="h-6 w-6 text-bold-text" />
           <span className="text-xl font-bold text-bold-text">Zeno</span>
         </Link>
 

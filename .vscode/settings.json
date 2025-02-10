@@ -1,0 +1,32 @@
+{
+    "WillLuke.nextjs.hasPrompted": true,
+    "console-ninja.toolsToEnableSupportAutomaticallyFor": {
+        "webpack": false,
+        "vite": false,
+        "angular": false,
+        "cypress": false,
+        "next.js": false,
+        "jest": false,
+        "nest.js": false,
+        "http-server": false,
+        "live-server": false,
+        "serve": false,
+        "nuxt": false,
+        "remix": false,
+        "qwik": false,
+        "hydrogen": false,
+        "serverless": false,
+        "astro": false
+    },
+    "console-ninja.showWhatsNew": false,
+    "console-ninja.installBinToPath": false,
+    "console-ninja.featureSet": "Community",
+    "console-ninja.syncSettings": false,
+    "console-ninja.predictiveLoggingEnabled": false,
+    "console-ninja.warnOnNoToolsDetected": false,
+    "console-ninja.autoClearLogViewerOnFileChanges": false,
+    "console-ninja.openHttpLinksInEditor": false,
+    "console-ninja.showWelcomeMessageInTools": false,
+    "console-ninja.output.showErrors": false,
+    "console-ninja.output.showNetworkRequests": false
+}
