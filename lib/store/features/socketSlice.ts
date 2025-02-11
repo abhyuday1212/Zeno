@@ -1,10 +1,18 @@
 import { SocketUser } from "./../../../types/index";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { OngoingCall, Participants } from "../../../types";
+import { Socket as ClientSocket } from "socket.io-client";
+
+interface SafeSocketState {
+  id: string | null;
+  connected: boolean;
+}
 
 const initialState = {
-  isConnected: false, // Track socket connection status
-  socket: null, // Store socket instance
-  onlineUsers: [] as SocketUser[], // Store online users in a array for SocketUser type
+  isConnected: false,
+  socket: null,
+  onlineUsers: [] as SocketUser[],
+  ongoingCall: {} as OngoingCall,
 };
 
 export const socketSlice = createSlice({
@@ -12,15 +20,16 @@ export const socketSlice = createSlice({
   initialState,
 
   reducers: {
-    setSocket: (state, action: PayloadAction<any>) => {
+    setSocket: (state, action) => {
       state.socket = action.payload;
     },
     onConnect: (state) => {
       state.isConnected = true;
     },
+
     onDisconnect: (state) => {
       state.isConnected = false;
-      state.socket = null; // Reset socket instance on disconnect
+      state.socket = null;
     },
 
     updateOnlineUsers: (state, action: PayloadAction<SocketUser[]>) => {

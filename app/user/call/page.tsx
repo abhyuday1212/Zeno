@@ -1,3 +1,4 @@
+import CallNotification from "@/components/callNotification";
 import ConnectionStatus from "@/components/SocketStatus";
 import { FunctionComponent } from "react";
 
@@ -8,6 +9,7 @@ const VideoCall: FunctionComponent<VideoCallProps> = () => {
     <div>
       This is video call page.
       <ConnectionStatus />
+      <CallNotification />
     </div>
   );
 };
