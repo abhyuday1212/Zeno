@@ -1,12 +1,11 @@
 import Image from "next/image";
-import { FaUserCircle } from "react-icons/fa";
 
-const Avatar = ({ src }) => {
+const Avatar = ({ src, firstLetter }) => {
   if (src) {
     return (
       <Image
         src={src}
-        alt="Avatar"
+        alt={firstLetter}
         className="rounded-full"
         height={40}
         width={40}
@@ -14,7 +13,11 @@ const Avatar = ({ src }) => {
     );
   }
 
-  return <FaUserCircle size={24} />;
+  return (
+    <div className="text-muted-text bg-bg-color w-[40px] h-[40px] rounded-full flex items-center justify-center">
+      <h1 className="text-2xl">{firstLetter}</h1>
+    </div>
+  );
 };
 
 export default Avatar;
