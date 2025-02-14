@@ -1,10 +1,11 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-// import { Toaster } from "@/components/ui/toaster";
 // import { Inter } from "next/font/google";
 // import GlobalLineLoader from "@/components/loaders/GlobalLineLoader";
-import { Providers } from "./providers"; 
+import { Providers } from "./providers";
+import CallNotification from "@/components/user/callNotification";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +36,8 @@ export default function RootLayout({
         <Providers>
           {/* <GlobalLineLoader /> */}
           {children}
-          {/* <Toaster /> */}
+          <CallNotification />
+          <Toaster />
         </Providers>
       </body>
     </html>

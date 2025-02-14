@@ -9,7 +9,7 @@ const VideoCall: FunctionComponent<VideoCallProps> = () => {
     <div>
       This is video call page.
       <ConnectionStatus />
-      <CallNotification />
+      {/* <CallNotification /> */}
     </div>
   );
 };

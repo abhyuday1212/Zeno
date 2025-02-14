@@ -45,7 +45,7 @@ const ListOnlineUsers = () => {
       dispatch(
         setOngoingCall({
           participants,
-          isRinging: true,
+          isRinging: false,
         })
       );
 
