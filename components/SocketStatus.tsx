@@ -2,7 +2,7 @@
 
 import { useAppSelector } from "@/lib/store/hooks";
 import React from "react";
-import ListOnlineUsers from "./ListOnlineUsers";
+import ListOnlineUsers from "./user/ListOnlineUsers";
 
 const ConnectionStatus = () => {
   const isConnected = useAppSelector(

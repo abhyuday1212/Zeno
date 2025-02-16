@@ -2,13 +2,14 @@
 
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import React, { useCallback } from "react";
-import Avatar from "./Avatar";
+import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
 import { SocketUser } from "@/types";
 import {
   setOngoingCall,
   setParticipants,
 } from "@/lib/store/features/callSlice";
+import { setLocalStream } from "@/lib/store/features/socketSlice";
 
 const ListOnlineUsers = () => {
   const dispatch = useAppDispatch();
@@ -20,13 +21,56 @@ const ListOnlineUsers = () => {
     (state) => state.socketContext.onlineUsers
   );
 
+  const localStream = useAppSelector(
+    (state) => state.socketContext.localStream
+  );
+
   const currentSocketUser = onlineUsers?.find(
     (onlineUser) => onlineUser.userId === session.user?.id
   );
 
+  const getMediaStream = useCallback(
+    async (faceMode?: string) => {
+      if (localStream) {
+        return localStream;
+      }
+
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(
+          (device) => device.kind === "videoinput"
+        );
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: {
+            width: { min: 640, ideal: 1280, max: 1920 },
+            height: { min: 400, ideal: 720, max: 1080 },
+            frameRate: { min: 16, ideal: 30, max: 30 },
+            facingMode: videoDevices.length > 0 ? faceMode : undefined,
+          },
+        });
+        dispatch(setLocalStream(stream));
+        return stream;
+      } catch (error) {
+        dispatch(setLocalStream(null));
+        return null;
+      }
+    },
+    [localStream]
+  );
+
   const handleCall = useCallback(
-    (user: SocketUser) => {
+    async (user: SocketUser) => {
       if (!currentSocketUser || !socket) return;
+
+      const stream = await getMediaStream();
+
+      if (!stream) {
+        console.log("No stream found");
+
+        return;
+      }
 
       // Create participants object with proper data
       const participants = {

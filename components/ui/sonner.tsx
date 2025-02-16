@@ -17,7 +17,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         {
           position: "fixed",
           bottom: "4px",
-          right: "-25px",
+          right: "34px",
 
         } as React.CSSProperties
       }

@@ -2,6 +2,7 @@ import { SocketUser } from "./../../../types/index";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { OngoingCall, Participants } from "../../../types";
 import { Socket as ClientSocket } from "socket.io-client";
+import { set } from "zod";
 
 interface SafeSocketState {
   id: string | null;
@@ -13,6 +14,9 @@ const initialState = {
   socket: null,
   onlineUsers: [] as SocketUser[],
   ongoingCall: {} as OngoingCall,
+  localStream: null as MediaStream | null,
+  isMicOn: true,
+  isCameraOn: true,
 };
 
 export const socketSlice = createSlice({
@@ -35,10 +39,29 @@ export const socketSlice = createSlice({
     updateOnlineUsers: (state, action: PayloadAction<SocketUser[]>) => {
       state.onlineUsers = action.payload;
     },
+
+    setLocalStream: (state, action) => {
+      state.localStream = action.payload;
+    },
+
+    setMic: (state, action) => {
+      state.isMicOn = action.payload;
+    },
+
+    setCamera: (state, action) => {
+      state.isCameraOn = action.payload;
+    },
   },
 });
 
-export const { setSocket, onConnect, onDisconnect, updateOnlineUsers } =
-  socketSlice.actions;
+export const {
+  setSocket,
+  onConnect,
+  onDisconnect,
+  updateOnlineUsers,
+  setLocalStream,
+  setMic,
+  setCamera,
+} = socketSlice.actions;
 
 export default socketSlice.reducer;

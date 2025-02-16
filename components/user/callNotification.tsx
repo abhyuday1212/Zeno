@@ -12,7 +12,7 @@ const CallNotification = () => {
     if (onGoingCall.isRinging && !toastIdRef.current) {
       toastIdRef.current = toast.custom(
         (t) => (
-          <div className="flex flex-col gap-1 pl-2 pr-4 py-2 border border-grey rounded-2xl w-[20rem]">
+          <div className="flex flex-col gap-1 px-3 py-2 border border-grey rounded-2xl w-[24rem]">
             <h2 className="text-lg font-semibold">Incoming Call</h2>
             <p className="text-lg">
               {onGoingCall.participants?.caller?.profile?.name || "Someone"} is
