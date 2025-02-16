@@ -15,9 +15,9 @@ function VideoCall() {
 
   const dispatch = useAppDispatch();
 
-  // if (!localStream) {
-  //   return null;
-  // }
+  if (!localStream) {
+    return null;
+  }
   console.log("localStream....", localStream);
 
   useEffect(() => {
