@@ -15,9 +15,6 @@ function VideoCall() {
 
   const dispatch = useAppDispatch();
 
-  if (!localStream) {
-    return null;
-  }
   console.log("localStream....", localStream);
 
   useEffect(() => {
@@ -49,6 +46,10 @@ function VideoCall() {
       dispatch(setMic(audioTrack.enabled));
     }
   }, [localStream]);
+
+  if (!localStream) {
+    return null;
+  }
 
   return (
     <div>
