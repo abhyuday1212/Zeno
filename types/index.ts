@@ -1,3 +1,4 @@
+import Peer from "simple-peer";
 import { User } from "next-auth";
 
 export type SocketUser = {
@@ -14,4 +15,10 @@ export interface Participants {
 export interface OngoingCall {
   participants: Participants | null;
   isRinging: boolean;
+}
+
+export interface PeerData {
+  peerConnection: Peer.Instance;
+  stream: MediaStream | undefined;
+  participantUser: SocketUser;
 }

@@ -1,4 +1,4 @@
-import { SocketUser } from "./../../../types/index";
+import { PeerData, SocketUser } from "./../../../types/index";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { OngoingCall, Participants } from "../../../types";
 import { Socket as ClientSocket } from "socket.io-client";
@@ -17,6 +17,7 @@ const initialState = {
   localStream: null as MediaStream | null,
   isMicOn: true,
   isCameraOn: true,
+  peer: null as PeerData | null,
 };
 
 export const socketSlice = createSlice({
@@ -27,6 +28,7 @@ export const socketSlice = createSlice({
     setSocket: (state, action) => {
       state.socket = action.payload;
     },
+
     onConnect: (state) => {
       state.isConnected = true;
     },
@@ -51,6 +53,10 @@ export const socketSlice = createSlice({
     setCamera: (state, action) => {
       state.isCameraOn = action.payload;
     },
+
+    setPeer: (state, action) => {
+      state.peer = action.payload;
+    },
   },
 });
 
@@ -62,6 +68,7 @@ export const {
   setLocalStream,
   setMic,
   setCamera,
+  setPeer,
 } = socketSlice.actions;
 
 export default socketSlice.reducer;

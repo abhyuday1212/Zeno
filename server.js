@@ -2,6 +2,9 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 import onCall from "./socketEvents/socketEvents.js"
+import onWebrtcSignal from "./socketEvents/onWebrtcSignal.js"
+import onCallAccepted from "./socketEvents/onCallAccepted.js";
+
 
 
 
@@ -45,6 +48,8 @@ app.prepare().then(() => {
 
         // call events
         socket.on('call', onCall);
+        // socket.on('webrtcSignal', onWebrtcSignal)
+        socket.on("callAccepted", onCallAccepted);
 
     });
 
