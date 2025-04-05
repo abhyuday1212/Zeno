@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import {
   onConnect,
   onDisconnect,
+  setLocalStream,
   setPeer,
   setSocket,
   updateOnlineUsers,
@@ -13,6 +14,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useSession } from "next-auth/react";
 import { OngoingCall, Participants, PeerData, SocketUser } from "@/types/index";
 import {
+  resetCallState,
+  setIsCallEnded,
   setOngoingCall,
   setParticipants,
 } from "@/lib/store/features/callSlice";
@@ -207,6 +210,28 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     };
   }, [userId, session, dispatch]);
 
+
+  const handleRemoteHangup = useCallback(() => {
+    console.log("Remote user hung up");
+
+    if (peer?.peerConnection) {
+      peer.peerConnection.destroy();
+    }
+
+    if (localstream) {
+      localstream.getTracks().forEach((track) => track.stop());
+    }
+
+    dispatch(setPeer(null));
+    dispatch(setLocalStream(null));
+    dispatch(setIsCallEnded(true));
+
+    setTimeout(() => {
+      dispatch(setIsCallEnded(false));
+      dispatch(resetCallState());
+    }, 2000);
+  }, [peer, localstream, dispatch]);
+
   // calls
   useEffect(() => {
     if (!socketRef.current) return;
@@ -218,10 +243,13 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     // Add this new listener
     socketRef.current.on("callAccepted", handleCallAccepted);
 
+    socketRef.current.on("hangup", handleRemoteHangup);
+
     return () => {
       socketRef.current.off("incomingCall", onIncomingCall);
       // socketRef.current.off("webrtcSignal", completePeerConnection);
       socketRef.current.off("callAccepted", handleCallAccepted);
+      socketRef.current.off("hangup", handleRemoteHangup);
     };
   }, [
     dispatch,

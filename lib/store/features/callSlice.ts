@@ -11,8 +11,9 @@ const initialState = {
     caller: null,
     receiver: null,
   } as Participants,
-};
 
+  isCallEnded: false,
+};
 
 export const callSlice = createSlice({
   name: "callContext",
@@ -21,16 +22,28 @@ export const callSlice = createSlice({
     setParticipants: (state, action: PayloadAction<Participants>) => {
       state.participants = action.payload;
     },
+
     setOngoingCall: (state, action: PayloadAction<OngoingCall>) => {
       state.ongoingCall = action.payload;
     },
+
+    setIsCallEnded: (state, action: PayloadAction<boolean>) => {
+      state.isCallEnded = action.payload;
+    },
+
     resetCallState: (state) => {
       state.ongoingCall = initialState.ongoingCall;
       state.participants = initialState.participants;
+      state.isCallEnded = initialState.isCallEnded;
     },
   },
 });
 
-export const { setParticipants, setOngoingCall, resetCallState } =
-  callSlice.actions;
+export const {
+  setParticipants,
+  setOngoingCall,
+  resetCallState,
+  setIsCallEnded,
+} = callSlice.actions;
+
 export default callSlice.reducer;

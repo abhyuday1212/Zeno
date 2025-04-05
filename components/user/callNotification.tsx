@@ -5,8 +5,12 @@ import { toast } from "sonner";
 import { useCallback, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { OngoingCall, PeerData } from "@/types";
-import { setOngoingCall } from "@/lib/store/features/callSlice";
-import Peer, { SignalData } from "simple-peer";
+import {
+  resetCallState,
+  setIsCallEnded,
+  setOngoingCall,
+} from "@/lib/store/features/callSlice";
+import { SignalData } from "simple-peer";
 import { setLocalStream, setPeer } from "@/lib/store/features/socketSlice";
 import { useMediaStream } from "@/hooks/useMediaStream";
 import { usePeerConnection } from "@/hooks/usePeerConnection";
@@ -31,7 +35,6 @@ const CallNotification = () => {
 
   const { getMediaStream, localStream } = useMediaStream();
 
-  const handleHangup = useCallback(({}) => {}, []);
 
   const { createPeer } = usePeerConnection();
 
@@ -45,6 +48,8 @@ const CallNotification = () => {
           isRinging: false,
         })
       );
+
+      console.log("Hangup call called");
 
       // This is the local stream that will be shared with the other person
       const stream = await getMediaStream();
@@ -82,11 +87,11 @@ const CallNotification = () => {
         }
       });
     },
-    [socket, currentSocketUser]
+    [socket, currentSocketUser, getMediaStream, dispatch, createPeer]
   );
 
   useEffect(() => {
-    if (onGoingCall.isRinging && !toastIdRef.current) {
+    if (onGoingCall?.isRinging && !toastIdRef.current) {
       toastIdRef.current = toast.custom(
         (t) => (
           <div className="flex flex-col gap-1 px-3 py-2 border border-grey rounded-2xl w-[24rem]">
@@ -135,7 +140,7 @@ const CallNotification = () => {
         toastIdRef.current = null;
       }
     };
-  }, [onGoingCall.isRinging, onGoingCall.participants]);
+  }, [onGoingCall?.isRinging, onGoingCall?.participants]);
 
   return null;
 };

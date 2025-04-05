@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import onCall from "./socketEvents/socketEvents.js"
 import onWebrtcSignal from "./socketEvents/onWebrtcSignal.js"
 import onCallAccepted from "./socketEvents/onCallAccepted.js";
+import onHangup from "./socketEvents/onHangup.js";
 
 
 
@@ -50,6 +51,7 @@ app.prepare().then(() => {
         socket.on('call', onCall);
         // socket.on('webrtcSignal', onWebrtcSignal)
         socket.on("callAccepted", onCallAccepted);
+        socket.on("hangup", onHangup);
 
     });
 
