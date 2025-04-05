@@ -9,10 +9,6 @@ const ConnectionStatus = () => {
     (state) => state.socketContext.isConnected
   );
 
-  const onlineUsers = useAppSelector(
-    (state) => state.socketContext.onlineUsers
-  );
-
   return (
     <div>
       Socket Status: {isConnected ? "Connected" : "Disconnected"}

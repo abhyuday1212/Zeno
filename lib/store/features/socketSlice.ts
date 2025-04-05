@@ -1,13 +1,6 @@
 import { PeerData, SocketUser } from "./../../../types/index";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { OngoingCall, Participants } from "../../../types";
-import { Socket as ClientSocket } from "socket.io-client";
-import { set } from "zod";
-
-interface SafeSocketState {
-  id: string | null;
-  connected: boolean;
-}
+import { OngoingCall } from "../../../types";
 
 const initialState = {
   isConnected: false,

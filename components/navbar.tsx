@@ -1,9 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Printer, User, Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-// import { useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { User } from "lucide-react";
 import { auth } from "@/auth";
 import SignOut from "./signOut";
 import { ModeToggle } from "./mode-toggle";

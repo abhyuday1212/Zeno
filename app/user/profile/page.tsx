@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 
 interface StudentProfile {
@@ -52,10 +53,13 @@ const StudentProfilePage: React.FC = () => {
           {/* Profile Section */}
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-8 items-center sm:items-start">
             <div className="shrink-0">
-              <img
-                src={profile.photo}
+              <Image
+                src={profile?.photo}
+                width={144}
+                height={144}
                 alt="Student Photo"
                 className="w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover"
+                // priority // Add this if it's above the fold content
               />
             </div>
             <label className="flex flex-col w-full text-sm sm:text-lg font-medium text-gray-700 dark:text-gray-200">

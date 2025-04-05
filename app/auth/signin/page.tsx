@@ -25,17 +25,16 @@ import {
   handleGithubSignin,
   handleGoogleSignin,
 } from "@/app/actions/authActions";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import ErrorMessage from "@/components/error-message";
 import { Button } from "@/components/ui/button";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 // import Navbar from "@/components/navbar";
 
-export default function SignIn() {
+function SignInForm() {
   const params = useSearchParams();
   const error = params.get("error");
   const router = useRouter();
@@ -74,16 +73,14 @@ export default function SignIn() {
         setGlobalError(result.message);
       }
     } catch (error) {
-      console.log("An unexpected error occurred. Please try again.");
+      console.log("An unexpected error occurred. Error: ", error);
     }
   };
 
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
 
   return (
-    <div
-      className="pt-16 h-screen grow flex items-center justify-center p-4"
-    >
+    <div className="pt-16 h-screen grow flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center text-bold-text">
@@ -182,5 +179,19 @@ export default function SignIn() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SignIn() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center h-screen">
+          Loading...
+        </div>
+      }
+    >
+      <SignInForm />
+    </Suspense>
   );
 }

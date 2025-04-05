@@ -7,7 +7,11 @@ export default function Page1() {
     <>
       <button
         onClick={() => {
-          session?.user && update({ ...session.user, name: "asdasdasd singh" });
+          // This express gave a linting error
+          // session?.user && update({ ...session.user, name: "asdasdasd singh" });
+          if (session?.user) {
+            update({ ...session.user, name: "asdasdasd singh" });
+          }
         }}
       >
         Update session

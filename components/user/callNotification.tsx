@@ -3,15 +3,12 @@
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { toast } from "sonner";
 import { useCallback, useEffect, useRef } from "react";
-import { useSession } from "next-auth/react";
 import { OngoingCall, PeerData } from "@/types";
 import {
-  resetCallState,
-  setIsCallEnded,
   setOngoingCall,
 } from "@/lib/store/features/callSlice";
 import { SignalData } from "simple-peer";
-import { setLocalStream, setPeer } from "@/lib/store/features/socketSlice";
+import { setPeer } from "@/lib/store/features/socketSlice";
 import { useMediaStream } from "@/hooks/useMediaStream";
 import { usePeerConnection } from "@/hooks/usePeerConnection";
 
@@ -19,21 +16,10 @@ const CallNotification = () => {
   const dispatch = useAppDispatch();
   const onGoingCall = useAppSelector((state) => state.callContext.ongoingCall);
   const toastIdRef = useRef<string | number | null>(null);
-  const { data: session } = useSession();
 
   const socket = useAppSelector((state) => state.socketContext.socket);
 
-  const onlineUsers = useAppSelector(
-    (state) => state.socketContext.onlineUsers
-  );
-
-  const currentSocketUser = onlineUsers?.find(
-    (onlineUser) => onlineUser.userId === session.user?.id
-  );
-
-  const currentPeer = useAppSelector((state) => state.socketContext.peer);
-
-  const { getMediaStream, localStream } = useMediaStream();
+  const { getMediaStream } = useMediaStream();
 
 
   const { createPeer } = usePeerConnection();
@@ -87,7 +73,7 @@ const CallNotification = () => {
         }
       });
     },
-    [socket, currentSocketUser, getMediaStream, dispatch, createPeer]
+    [socket, getMediaStream, dispatch, createPeer]
   );
 
   useEffect(() => {
@@ -140,7 +126,7 @@ const CallNotification = () => {
         toastIdRef.current = null;
       }
     };
-  }, [onGoingCall?.isRinging, onGoingCall?.participants]);
+  }, [onGoingCall, handleJoinCall]);
 
   return null;
 };

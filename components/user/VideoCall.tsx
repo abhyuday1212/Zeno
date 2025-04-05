@@ -21,9 +21,6 @@ function VideoCall() {
   const isCallEnded = useAppSelector((state) => state.callContext.isCallEnded);
   const isMicOn = useAppSelector((state) => state.socketContext.isMicOn);
   const isVidOn = useAppSelector((state) => state.socketContext.isCameraOn);
-  const ongoingCall = useAppSelector(
-    (state) => state.socketContext.ongoingCall
-  );
 
   // for call hanngup
   const socket = useAppSelector((state) => state.socketContext.socket);
@@ -46,7 +43,7 @@ function VideoCall() {
       const audioTrack = localStream.getAudioTracks()[0];
       dispatch(setMic(audioTrack.enabled));
     }
-  }, [localStream]);
+  }, [localStream, dispatch]);
 
   const toggleCam = useCallback(() => {
     if (localStream) {
@@ -56,7 +53,7 @@ function VideoCall() {
 
       dispatch(setCamera(videoTrack.enabled));
     }
-  }, [localStream]);
+  }, [localStream, dispatch]);
 
   const toggleMic = useCallback(() => {
     if (localStream) {
@@ -66,7 +63,7 @@ function VideoCall() {
 
       dispatch(setMic(audioTrack.enabled));
     }
-  }, [localStream]);
+  }, [localStream, dispatch]);
 
   const handleHangup = useCallback(
     (data: { ongoingCall?: OngoingCall | null; isEmitHangup?: boolean }) => {
@@ -115,7 +112,7 @@ function VideoCall() {
     return null;
   }
 
-  const isOnCall = localStream && peer && ongoingCall ? true : false;
+  // const isOnCall = localStream && peer && ongoingCall ? true : false;
 
   return (
     <div>
@@ -144,7 +141,7 @@ function VideoCall() {
           <div className="w-full h-[425px] z-0 border-2 bg-gray-800 flex flex-col items-center justify-center">
             <p className="text-white text-lg">Waiting for remote video...</p>
             <p className="text-sm text-gray-400 mt-2">
-              {remoteName} hasn't joined yet
+              {remoteName} hasn&apos;t joined yet
             </p>
           </div>
         )}

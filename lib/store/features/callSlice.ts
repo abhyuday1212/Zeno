@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { OngoingCall, Participants, SocketUser } from "../../../types";
+import { OngoingCall, Participants } from "../../../types";
 
 const initialState = {
   ongoingCall: {

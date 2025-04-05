@@ -59,6 +59,7 @@ export default function SignUp() {
         setGlobalError(result.message);
       }
     } catch (error) {
+      console.log("An unexpected error occurred. Error: ", error);
       setGlobalError("An unexpected error occurred. Please try again.");
     }
   };

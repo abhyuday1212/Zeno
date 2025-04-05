@@ -3,7 +3,6 @@
 import { ThemeProvider } from "next-themes";
 import { SessionProvider } from "next-auth/react";
 import StoreProvider from "./StoreProvider";
-import { useTheme } from "next-themes";
 import SocketInitializer from "./SocketInitialiser";
 
 interface ProvidersProps {

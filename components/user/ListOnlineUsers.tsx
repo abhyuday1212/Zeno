@@ -4,18 +4,16 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import React, { useCallback } from "react";
 import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
-import { PeerData, SocketUser } from "@/types";
+import { SocketUser } from "@/types";
 import {
   setOngoingCall,
   setParticipants,
 } from "@/lib/store/features/callSlice";
-import { setLocalStream, setPeer } from "@/lib/store/features/socketSlice";
 import { useMediaStream } from "@/hooks/useMediaStream";
-import { usePeerConnection } from "@/hooks/usePeerConnection";
 
 const ListOnlineUsers = () => {
   const dispatch = useAppDispatch();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const socket = useAppSelector((state) => state.socketContext.socket);
 
@@ -27,7 +25,7 @@ const ListOnlineUsers = () => {
     (onlineUser) => onlineUser.userId === session.user?.id
   );
 
-  const { getMediaStream, localStream } = useMediaStream();
+  const { getMediaStream } = useMediaStream();
 
   const handleCall = useCallback(
     async (user: SocketUser) => {
@@ -71,7 +69,7 @@ const ListOnlineUsers = () => {
   return (
     <div>
       {onlineUsers &&
-        onlineUsers.map((user, index) => {
+        onlineUsers.map((user) => {
           // Don't show the current user in the list
           if (user.profile.id === session.user?.id) return null;
 

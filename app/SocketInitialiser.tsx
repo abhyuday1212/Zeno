@@ -12,14 +12,13 @@ import {
 } from "../lib/store/features/socketSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useSession } from "next-auth/react";
-import { OngoingCall, Participants, PeerData, SocketUser } from "@/types/index";
+import { OngoingCall, Participants, PeerData } from "@/types/index";
 import {
   resetCallState,
   setIsCallEnded,
   setOngoingCall,
   setParticipants,
 } from "@/lib/store/features/callSlice";
-import { Socket } from "socket.io";
 import { SignalData } from "simple-peer";
 import { usePeerConnection } from "@/hooks/usePeerConnection";
 
@@ -33,17 +32,6 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
   const socket = useAppSelector((state) => state.socketContext.socket);
 
   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  const onlineUsers = useAppSelector(
-    (state) => state.socketContext.onlineUsers
-  );
-
-  const ongoingCall = useAppSelector(
-    (state) => state.socketContext.ongoingCall
-  );
-
-  const currentSocketUser = onlineUsers?.find(
-    (onlineUser) => onlineUser.userId === session?.user?.id
-  );
 
   const localstream = useAppSelector(
     (state) => state.socketContext.localStream
@@ -197,7 +185,7 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
 
     socketRef.current.emit("addNewUser", session.user);
 
-    const handleGetUsers = (users: any) => {
+    const handleGetUsers = (users) => {
       dispatch(updateOnlineUsers(users));
     };
 
@@ -210,6 +198,7 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     };
   }, [userId, session, dispatch]);
 
+  
   const handleRemoteHangup = useCallback(() => {
     console.log("Remote user hung up");
 

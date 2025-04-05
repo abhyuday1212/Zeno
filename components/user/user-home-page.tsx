@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import Navbar from "@/components/navbar";
-import { Printer, FileText, Clock, MapPin, IndianRupee } from "lucide-react";
+import { Printer, FileText, MapPin, IndianRupee } from "lucide-react";
 import Link from "next/link";
 import { auth } from "@/auth";
 
