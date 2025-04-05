@@ -49,7 +49,7 @@ app.prepare().then(() => {
 
         // call events
         socket.on('call', onCall);
-        // socket.on('webrtcSignal', onWebrtcSignal)
+        socket.on('webrtcSignal', onWebrtcSignal)
         socket.on("callAccepted", onCallAccepted);
         socket.on("hangup", onHangup);
 

@@ -6,6 +6,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import CallNotification from "@/components/user/callNotification";
 import { Toaster } from "@/components/ui/sonner";
+import { auth } from "@/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,18 +23,20 @@ export const metadata: Metadata = {
   description: "A Platform for deaf and mute.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
-        <Providers>
+        <Providers session={session}>
           {/* <GlobalLineLoader /> */}
           {children}
           <CallNotification />
