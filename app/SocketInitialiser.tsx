@@ -151,9 +151,12 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!userId) return;
 
-    const newSocket = io("http://localhost:3000", {
+    const newSocket = io(window.location.origin, {
       transports: ["websocket"],
     });
+
+    console.log("🚀 -> SocketInitialiser.tsx:157 -> useEffect -> newSocket:", newSocket);
+
     socketRef.current = newSocket;
 
     // Move connection handlers here
