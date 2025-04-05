@@ -210,7 +210,6 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     };
   }, [userId, session, dispatch]);
 
-
   const handleRemoteHangup = useCallback(() => {
     console.log("Remote user hung up");
 
@@ -220,6 +219,7 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
 
     if (localstream) {
       localstream.getTracks().forEach((track) => track.stop());
+      dispatch(setLocalStream(null));
     }
 
     dispatch(setPeer(null));
@@ -238,11 +238,8 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
 
     socketRef.current.on("incomingCall", onIncomingCall);
     // socketRef.current.on("webrtcSignal", completePeerConnection);
-    socketRef.current.off("callAccepted", handleCallAccepted);
-
     // Add this new listener
     socketRef.current.on("callAccepted", handleCallAccepted);
-
     socketRef.current.on("hangup", handleRemoteHangup);
 
     return () => {
@@ -257,6 +254,7 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     onIncomingCall,
     // completePeerConnection,
     handleCallAccepted,
+    handleRemoteHangup,
   ]);
 
   return <>{children}</>;

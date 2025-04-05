@@ -1,3 +1,5 @@
+"use client"
+
 import ConnectionStatus from "@/components/SocketStatus";
 import VideoCall from "@/components/user/VideoCall";
 import { FunctionComponent } from "react";
