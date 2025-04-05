@@ -86,6 +86,7 @@ export default {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET || "secr3t",
+  trustHost: true,
   callbacks: {
     authorized({ request: { nextUrl }, auth }) {
       const { pathname } = nextUrl;
