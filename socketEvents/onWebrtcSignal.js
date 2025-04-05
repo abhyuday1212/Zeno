@@ -14,17 +14,16 @@ const onWebrtcSignal = async (data) => {
     if (data.isCaller) {
         if (data.ongoingCall.participants.receiver.socketId) {
             io.to(data.ongoingCall.participants.receiver.socketId).emit("webrtcSignal", data)
-        } else {
-            console.log("data.ongoingCall.participants.receiver.socketId does not exist...")
         }
     }
     else {
         if (data.ongoingCall.participants.caller.socketId) {
             io.to(data.ongoingCall.participants.caller.socketId).emit("webrtcSignal", data)
         }
-
-        console.log("data.ongoingCall.participants.caller.socketId does not exist in the onWebrtcSignal function")
     }
+    console.log("Signal from:", data);
+    console.log("Caller socketId:", data.ongoingCall.participants.caller.socketId);
+    console.log("Receiver socketId:", data.ongoingCall.participants.receiver.socketId);
 }
 
 export default onWebrtcSignal;

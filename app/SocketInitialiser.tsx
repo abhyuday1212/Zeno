@@ -121,6 +121,17 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
           });
         }
       });
+
+      newPeer.on("stream", (remoteStream) => {
+        console.log("Received remote stream:", remoteStream);
+
+        // Update the peer data with the remote stream
+        const updatedPeerData = {
+          ...peerData,
+          stream: remoteStream,
+        };
+        dispatch(setPeer(updatedPeerData));
+      });
     },
     [localstream, createPeer, dispatch, socket]
   );
@@ -155,7 +166,10 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
       transports: ["websocket"],
     });
 
-    console.log("🚀 -> SocketInitialiser.tsx:157 -> useEffect -> newSocket:", newSocket);
+    console.log(
+      "🚀 -> SocketInitialiser.tsx:157 -> useEffect -> newSocket:",
+      newSocket
+    );
 
     socketRef.current = newSocket;
 
@@ -201,7 +215,6 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     };
   }, [userId, session, dispatch]);
 
-  
   const handleRemoteHangup = useCallback(() => {
     console.log("Remote user hung up");
 
@@ -228,15 +241,33 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!socketRef.current) return;
 
+    const handleWebRTCSignal = (data) => {
+      console.log("Received WebRTC signal:", data);
+
+      // Apply the incoming signal to your peer connection
+      if (peer?.peerConnection) {
+        console.log("Applying signal to existing peer");
+        peer.peerConnection.signal(data.sdp);
+      } else {
+        console.log(
+          "No peer connection to apply signal to - THIS IS A PROBLEM"
+        );
+
+        // Consider creating a peer connection if one doesn't exist (e.g., for the receiver)
+        console.log(
+          "This might be a receiver that hasn't created their peer yet"
+        );
+      }
+    };
+
     socketRef.current.on("incomingCall", onIncomingCall);
-    // socketRef.current.on("webrtcSignal", completePeerConnection);
-    // Add this new listener
     socketRef.current.on("callAccepted", handleCallAccepted);
+    socketRef.current.on("webrtcSignal", handleWebRTCSignal);
     socketRef.current.on("hangup", handleRemoteHangup);
 
     return () => {
       socketRef.current.off("incomingCall", onIncomingCall);
-      // socketRef.current.off("webrtcSignal", completePeerConnection);
+      socketRef.current.off("webrtcSignal", handleWebRTCSignal);
       socketRef.current.off("callAccepted", handleCallAccepted);
       socketRef.current.off("hangup", handleRemoteHangup);
     };
@@ -247,6 +278,7 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     // completePeerConnection,
     handleCallAccepted,
     handleRemoteHangup,
+    peer,
   ]);
 
   return <>{children}</>;
