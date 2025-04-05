@@ -122,16 +122,16 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
         }
       });
 
-      newPeer.on("stream", (remoteStream) => {
-        console.log("Received remote stream:", remoteStream);
+      // newPeer.on("stream", (remoteStream) => {
+      //   console.log("Received remote stream:", remoteStream);
 
-        // Update the peer data with the remote stream
-        const updatedPeerData = {
-          ...peerData,
-          stream: remoteStream,
-        };
-        dispatch(setPeer(updatedPeerData));
-      });
+      //   // Update the peer data with the remote stream
+      //   const updatedPeerData = {
+      //     ...peerData,
+      //     stream: remoteStream,
+      //   };
+      //   dispatch(setPeer(updatedPeerData));
+      // });
     },
     [localstream, createPeer, dispatch, socket]
   );
