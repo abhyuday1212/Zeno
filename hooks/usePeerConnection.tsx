@@ -10,33 +10,28 @@ export const usePeerConnection = () => {
 
   const createPeer = useCallback(
     (stream: MediaStream, initiator: boolean) => {
-      // Define ICE server configurations for STUN and TURN
+      // Define ICE server configurations using Twilio's STUN and TURN servers
       const stunServers: RTCIceServer[] = [
         {
-          urls: [
-            "stun:stun.l.google.com:19302",
-            "stun:stun1.l.google.com:19302",
-            "stun:stun2.l.google.com:19302",
-            "stun:stun3.l.google.com:19302",
-          ],
+          urls: "stun:global.stun.twilio.com:3478",
         },
       ];
 
       const turnServers: RTCIceServer[] = [
         {
+          urls: process.env.NEXT_PUBLIC_TWILIO_TURN_URLS_1!,
           username: process.env.NEXT_PUBLIC_TWILIO_TURN_USERNAME_1!,
           credential: process.env.NEXT_PUBLIC_TWILIO_TURN_CREDENTIAL_1!,
-          urls: process.env.NEXT_PUBLIC_TWILIO_TURN_URLS_1!,
         },
         {
+          urls: process.env.NEXT_PUBLIC_TWILIO_TURN_URLS_2!,
           username: process.env.NEXT_PUBLIC_TWILIO_TURN_USERNAME_2!,
           credential: process.env.NEXT_PUBLIC_TWILIO_TURN_CREDENTIAL_2!,
-          urls: process.env.NEXT_PUBLIC_TWILIO_TURN_URLS_2!,
         },
         {
+          urls: process.env.NEXT_PUBLIC_TWILIO_TURN_URLS_3!,
           username: process.env.NEXT_PUBLIC_TWILIO_TURN_USERNAME_3!,
           credential: process.env.NEXT_PUBLIC_TWILIO_TURN_CREDENTIAL_3!,
-          urls: process.env.NEXT_PUBLIC_TWILIO_TURN_URLS_3!,
         },
       ];
 
