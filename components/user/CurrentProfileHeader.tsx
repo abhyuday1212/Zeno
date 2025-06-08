@@ -6,7 +6,8 @@ import React from "react";
 import { useAppSelector } from "@/lib/store/hooks";
 import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
-import { AnimatedSubscribeButton } from "@/components/magicui/animated-subscribe-button";
+import { AnimatedSubscribeButton } from "../AnimatedSubscribeButton";
+
 
 //  This is small card showing current user profile
 export default function CurrentProfileHeader() {
