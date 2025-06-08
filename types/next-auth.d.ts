@@ -19,6 +19,8 @@ declare module "next-auth" {
       email: string;
       accessToken: string;
       salt: String;
+      image: String | null;
+      picture: String | null;
     };
   }
 }

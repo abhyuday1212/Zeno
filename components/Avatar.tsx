@@ -7,14 +7,14 @@ const Avatar = ({ src, firstLetter }) => {
         src={src}
         alt={firstLetter}
         className="rounded-full"
-        height={40}
-        width={40}
+        height={48}
+        width={48}
       />
     );
   }
 
   return (
-    <div className="text-muted-text bg-bg-color w-[40px] h-[40px] rounded-full flex items-center justify-center">
+    <div className="dark:text-muted-text dark:bg-bg-color w-[48px] h-[48px] rounded-full flex items-center justify-center text-black bg-white border border-black">
       <h1 className="text-2xl">{firstLetter}</h1>
     </div>
   );
