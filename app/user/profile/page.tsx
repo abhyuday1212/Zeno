@@ -1,7 +1,9 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
+import Avatar from "@/components/Avatar";
 
 interface StudentProfile {
   firstname: string;
@@ -43,24 +45,35 @@ const StudentProfilePage: React.FC = () => {
     alert("Changes saved!");
   };
 
+  // fetch the user information from the session
+  const { data: session } = useSession();
+
   return (
     <div>
       <div className="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md h-full sm:h-screen mt-0">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold mb-6 mt-6 text-center sm:text-left text-gray-900 dark:text-gray-100">
-            Student Profile
+            User Profile
           </h1>
           {/* Profile Section */}
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mb-8 items-center sm:items-start">
             <div className="shrink-0">
-              <Image
-                src={profile?.photo}
-                width={144}
-                height={144}
-                alt="Student Photo"
-                className="w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover"
-                // priority // Add this if it's above the fold content
-              />
+              {session?.user?.image ? (
+                <Image
+                  src={session?.user?.image.toString()}
+                  alt="Profile Picture"
+                  width={64}
+                  height={64}
+                  className="rounded-full mb-2 sm:mb-0"
+                />
+              ) : (
+                <div className="w-16 h-16 flex items-center justify-center bg-shine-lime rounded-full mb-2 ">
+                  <Avatar
+                    src={session?.user?.image}
+                    firstLetter={session?.user?.name?.charAt(0).toUpperCase()}
+                  />
+                </div>
+              )}
             </div>
             <label className="flex flex-col w-full text-sm sm:text-lg font-medium text-gray-700 dark:text-gray-200">
               <span>Name</span>
