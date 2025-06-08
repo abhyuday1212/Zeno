@@ -1,18 +1,18 @@
 "use client";
 
-import { useAppSelector } from "@/lib/store/hooks";
+// import { useAppSelector } from "@/lib/store/hooks";
 import React from "react";
 import ListOnlineUsers from "./user/ListOnlineUsers";
 
 const ConnectionStatus = () => {
-  const isConnected = useAppSelector(
-    (state) => state.socketContext.isConnected
-  );
+  // const isConnected = useAppSelector(
+  //   (state) => state.socketContext.isConnected
+  // );
 
   return (
     <div>
-      Socket Status: {isConnected ? "Connected" : "Disconnected"}
-      <h1>Online Users</h1>
+      {/* Socket Status: {isConnected ? "Connected" : "Disconnected"} */}
+      <h1>Online Friends</h1>
       {/* <pre>{JSON.stringify(onlineUsers)}</pre> */}
       {/* <ul>
         {onlineUsers.map((user, index) => (
