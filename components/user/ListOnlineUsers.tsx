@@ -93,8 +93,8 @@ const ListOnlineUsers = () => {
   );
 
   return (
-    <div className="w-7xl h-full">
-      <h1>Online Friends🤝 </h1>
+    <div className="w-full h-full">
+      <h1 className="text-xl font-bold mb-4">Online Friends🤝 </h1>
 
       {onlineUsers &&
         onlineUsers.map((user) => {
@@ -104,24 +104,27 @@ const ListOnlineUsers = () => {
           return (
             <div
               key={user.userId}
-              // onClick={() => handleCall(user)}
-              className="flex items-center justify-between"
+              className="flex items-center justify-between p-2 mb-1 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
             >
-              <div className="flex items-center gap-2 h-fit mb-2 p-2">
+              <div className="flex items-center gap-2 overflow-hidden">
                 <Avatar
                   src={user.profile?.image}
                   firstLetter={user.profile?.name.split(" ")[0].split("")[0]}
                 />
-                <div className="flex flex-col items-baseline cursor-pointer">
-                  <h1> {user.profile?.name}</h1>
-                  <i>{user.profile?.email}</i>
+                <div className="flex flex-col items-baseline cursor-pointer overflow-hidden">
+                  <h1 className="font-medium truncate w-full">
+                    {user.profile?.name}
+                  </h1>
+                  <i className="text-sm text-gray-500 truncate w-full">
+                    {user.profile?.email}
+                  </i>
                 </div>
               </div>
               <button
                 onClick={() => handleStartCall(user)}
-                className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-105 flex items-center justify-center"
+                className="bg-green-500 hover:bg-green-600 text-white p-4 sm:p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105 flex items-center justify-center flex-shrink-0 ml-2"
               >
-                <Phone size={20} />
+                <Phone size={16} className="sm:size-[20px]" />
               </button>
 
               {isCallActive && (
