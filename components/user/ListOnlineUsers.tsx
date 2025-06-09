@@ -6,6 +6,7 @@ import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
 import { SocketUser } from "@/types";
 import {
+  resetCallState,
   setIsCallActive,
   setOngoingCall,
   setParticipants,
@@ -16,16 +17,8 @@ import CallPopup from "./callPopup";
 
 const ListOnlineUsers = () => {
   const dispatch = useAppDispatch();
+  const { getMediaStream, stopMediaStream } = useMediaStream();
   const { data: session } = useSession();
-
-  const handleStartCall = (user) => {
-    dispatch(setIsCallActive(true));
-    handleCall(user);
-  };
-
-  const handleEndCall = () => {
-    dispatch(setIsCallActive(false));
-  };
 
   const socket = useAppSelector((state) => state.socketContext.socket);
 
@@ -41,7 +34,24 @@ const ListOnlineUsers = () => {
     (onlineUser) => onlineUser.userId === session.user?.id
   );
 
-  const { getMediaStream } = useMediaStream();
+  const callParticipants = useAppSelector(
+    (state) => state.callContext.participants
+  );
+
+  const handleStartCall = (user) => {
+    dispatch(setIsCallActive(true));
+    handleCall(user);
+  };
+
+  const handleEndCall = () => {
+    // Emit callCancelled event to notify the receiver
+    socket.emit("callCancelled", callParticipants);
+
+    // clear the media stream
+    stopMediaStream();
+    dispatch(resetCallState());
+    dispatch(setIsCallActive(false));
+  };
 
   const handleCall = useCallback(
     async (user: SocketUser) => {

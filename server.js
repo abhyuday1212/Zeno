@@ -5,7 +5,7 @@ import onCall from "./socketEvents/socketEvents.js"
 import onWebrtcSignal from "./socketEvents/onWebrtcSignal.js"
 import onCallAccepted from "./socketEvents/onCallAccepted.js";
 import onHangup from "./socketEvents/onHangup.js";
-
+import onCallCancelled from "./socketEvents/onCallCancelled.js";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -49,6 +49,7 @@ app.prepare().then(() => {
         socket.on('call', onCall);
         socket.on('webrtcSignal', onWebrtcSignal)
         socket.on("callAccepted", onCallAccepted); // when receiver accepts the call
+        socket.on("callCancelled", onCallCancelled);
         socket.on("hangup", onHangup);
 
     });

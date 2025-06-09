@@ -36,12 +36,13 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
   const socket = useAppSelector((state) => state.socketContext.socket);
   const router = useRouter();
   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  // const participants = useAppSelector(
+  //   (state) => state.callContext.participants
+  // );
 
   const localstream = useAppSelector(
     (state) => state.socketContext.localStream
   );
-
-  console.log("Local stream..........", localstream);
 
   const peer = useAppSelector((state) => state.socketContext.peer);
 
@@ -272,16 +273,33 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
       }
     };
 
+    const handleCallCancelled = (receivedParticipants) => {
+      console.log("Call was cancelled by caller");
+
+      // Now you can access both if needed:
+      // receivedParticipants - from socket
+      // participants - from Redux state
+
+      dispatch(
+        setOngoingCall({
+          participants: null,
+          isRinging: false,
+        })
+      );
+    };
+
     socketRef.current.on("incomingCall", onIncomingCall);
     socketRef.current.on("callAccepted", handleCallAccepted);
     socketRef.current.on("webrtcSignal", handleWebRTCSignal);
     socketRef.current.on("hangup", handleRemoteHangup);
+    socketRef.current.on("callCancelled", handleCallCancelled);
 
     return () => {
       socketRef.current.off("incomingCall", onIncomingCall);
       socketRef.current.off("webrtcSignal", handleWebRTCSignal);
       socketRef.current.off("callAccepted", handleCallAccepted);
       socketRef.current.off("hangup", handleRemoteHangup);
+      socketRef.current.off("callCancelled", handleCallCancelled);
     };
   }, [
     dispatch,
@@ -291,6 +309,7 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     handleCallAccepted,
     handleRemoteHangup,
     peer,
+    // participants,
   ]);
 
   return <>{children}</>;
