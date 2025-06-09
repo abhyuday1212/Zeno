@@ -15,12 +15,16 @@ import { useSession } from "next-auth/react";
 import { OngoingCall, Participants, PeerData } from "@/types/index";
 import {
   resetCallState,
+  setIsCallActive,
   setIsCallEnded,
   setOngoingCall,
   setParticipants,
+  setRoomId,
 } from "@/lib/store/features/callSlice";
 import { SignalData } from "simple-peer";
 import { usePeerConnection } from "@/hooks/usePeerConnection";
+import { generateRoomId } from "@/lib/CapitalizeFirstLetter";
+import { useRouter } from "next/navigation";
 
 const SocketInitializer = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch();
@@ -30,7 +34,7 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
   const { createPeer } = usePeerConnection();
 
   const socket = useAppSelector((state) => state.socketContext.socket);
-
+  const router = useRouter();
   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   const localstream = useAppSelector(
@@ -97,6 +101,8 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
         return;
       }
 
+      const roomId = callData.roomId || generateRoomId(10, true);
+      dispatch(setRoomId(roomId));
       // Create peer connection for the caller (initiator=true)
       const newPeer = createPeer(localstream, true);
 
@@ -116,12 +122,18 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
         if (socket) {
           socket.emit("webrtcSignal", {
             sdp: data,
-            ongoingCall: callData,
+            ongoingCall: {
+              ...callData,
+              roomId: roomId, // Include the room ID in the call data
+            },
             isCaller: true, // This is the caller
           });
         }
       });
 
+      dispatch(setIsCallActive(false));
+
+      router.push(`/user/call/${roomId}`);
       // newPeer.on("stream", (remoteStream) => {
       //   console.log("Received remote stream:", remoteStream);
 
@@ -133,7 +145,7 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
       //   dispatch(setPeer(updatedPeerData));
       // });
     },
-    [localstream, createPeer, dispatch, socket]
+    [localstream, createPeer, dispatch, socket, router]
   );
 
   const onIncomingCall = useCallback(

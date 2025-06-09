@@ -4,16 +4,17 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { toast } from "sonner";
 import { useCallback, useEffect, useRef } from "react";
 import { OngoingCall, PeerData } from "@/types";
-import {
-  setOngoingCall,
-} from "@/lib/store/features/callSlice";
+import { setOngoingCall, setRoomId } from "@/lib/store/features/callSlice";
 import { SignalData } from "simple-peer";
 import { setPeer } from "@/lib/store/features/socketSlice";
 import { useMediaStream } from "@/hooks/useMediaStream";
 import { usePeerConnection } from "@/hooks/usePeerConnection";
+import { generateRoomId } from "@/lib/CapitalizeFirstLetter";
+import { useRouter } from "next/navigation";
 
 const CallNotification = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const onGoingCall = useAppSelector((state) => state.callContext.ongoingCall);
   const toastIdRef = useRef<string | number | null>(null);
 
@@ -21,21 +22,23 @@ const CallNotification = () => {
 
   const { getMediaStream } = useMediaStream();
 
-
   const { createPeer } = usePeerConnection();
 
   // This function is creating the peer connection for receiver
   const handleJoinCall = useCallback(
     async (ongoingCall: OngoingCall) => {
       console.log("Online call...", ongoingCall);
+
+      const roomId = ongoingCall.roomId || generateRoomId(10, true);
+      dispatch(setRoomId(roomId));
+
       dispatch(
         setOngoingCall({
           participants: ongoingCall.participants,
           isRinging: false,
+          roomId: roomId,
         })
       );
-
-      console.log("Hangup call called");
 
       // This is the local stream that will be shared with the other person
       const stream = await getMediaStream();
@@ -46,8 +49,15 @@ const CallNotification = () => {
       }
 
       // Emit callAccepted event so caller knows to create their peer
+      // if (socket) {
+      //   socket.emit("callAccepted", ongoingCall);
+      // }
       if (socket) {
-        socket.emit("callAccepted", ongoingCall);
+        socket.emit("callAccepted", {
+          participants: ongoingCall.participants,
+          roomId: roomId,
+          isRinging: false,
+        });
       }
 
       const newPeer = createPeer(stream, false);
@@ -67,11 +77,16 @@ const CallNotification = () => {
           // emmit webrtc signal to the server, then the server will emit it to the other person
           socket.emit("webrtcSignal", {
             sdp: data,
-            ongoingCall,
+            ongoingCall: {
+              ...ongoingCall,
+              roomId: roomId,
+            },
             isCaller: false,
           });
         }
       });
+
+      router.push(`/user/call/${roomId}`);
     },
     [socket, getMediaStream, dispatch, createPeer]
   );
