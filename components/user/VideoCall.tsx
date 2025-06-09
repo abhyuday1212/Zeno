@@ -18,7 +18,7 @@ function VideoCall() {
   const localStream = useAppSelector(
     (state) => state.socketContext.localStream
   );
-  const isCallEnded = useAppSelector((state) => state.callContext.isCallEnded);
+  // const isCallEnded = useAppSelector((state) => state.callContext.isCallEnded);
   const isMicOn = useAppSelector((state) => state.socketContext.isMicOn);
   const isVidOn = useAppSelector((state) => state.socketContext.isCameraOn);
 
@@ -102,11 +102,11 @@ function VideoCall() {
     [socket, session, localStream, dispatch, peer]
   );
 
-  if (isCallEnded) {
-    return <div className="mt-5 text-rose-500 text-center">Call Ended</div>;
-    // TODO : Add a button to go back to home page and vie the friend list
-    // TODO : Add a Rate Experience component here
-  }
+  // if (isCallEnded) {
+  //   return <div className="mt-5 text-rose-500 text-center">Call Ended</div>;
+  //   // TODO : Add a button to go back to home page and vie the friend list
+  //   // TODO : Add a Rate Experience component here
+  // }
 
   if (!localStream && !peer) {
     return null;
