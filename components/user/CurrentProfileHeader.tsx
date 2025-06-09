@@ -8,7 +8,6 @@ import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
 import { AnimatedSubscribeButton } from "../AnimatedSubscribeButton";
 
-
 //  This is small card showing current user profile
 export default function CurrentProfileHeader() {
   const { data: session } = useSession();
@@ -31,7 +30,11 @@ export default function CurrentProfileHeader() {
             className="rounded-full mb-2 sm:mb-0"
           />
         ) : (
-          <div className="w-16 h-16 flex items-center justify-center bg-shine-lime rounded-full mb-2 ">
+          <div
+            className={`w-16 h-16 flex items-center justify-center ${
+              isConnected ? "bg-shine-lime" : "bg-red-500"
+            } rounded-full mb-2`}
+          >
             <Avatar
               src={session?.user?.image}
               firstLetter={session?.user?.name?.charAt(0).toUpperCase()}
