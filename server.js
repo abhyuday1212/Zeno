@@ -7,8 +7,6 @@ import onCallAccepted from "./socketEvents/onCallAccepted.js";
 import onHangup from "./socketEvents/onHangup.js";
 
 
-
-
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = process.env.PORT || 3000;
@@ -50,7 +48,7 @@ app.prepare().then(() => {
         // call events
         socket.on('call', onCall);
         socket.on('webrtcSignal', onWebrtcSignal)
-        socket.on("callAccepted", onCallAccepted);
+        socket.on("callAccepted", onCallAccepted); // when receiver accepts the call
         socket.on("hangup", onHangup);
 
     });
