@@ -94,10 +94,10 @@ function VideoCall() {
 
       dispatch(setIsCallEnded(true));
 
-      setTimeout(() => {
-        dispatch(setIsCallEnded(false));
-        dispatch(resetCallState());
-      }, 2000);
+      // setTimeout(() => {
+      // dispatch(setIsCallEnded(false));
+      // dispatch(resetCallState());
+      // }, 2000);
     },
     [socket, session, localStream, dispatch, peer]
   );

@@ -243,10 +243,10 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     dispatch(setLocalStream(null));
     dispatch(setIsCallEnded(true));
 
-    setTimeout(() => {
-      dispatch(setIsCallEnded(false));
-      dispatch(resetCallState());
-    }, 2000);
+    // setTimeout(() => {
+    // dispatch(setIsCallEnded(false));
+    // dispatch(resetCallState());
+    // }, 2000);
   }, [peer, localstream, dispatch]);
 
   // calls
