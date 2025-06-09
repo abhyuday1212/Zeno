@@ -10,11 +10,13 @@ export type SocketUser = {
 export interface Participants {
   caller: SocketUser | null;
   receiver: SocketUser | null;
+  roomId?: string;
 }
 
 export interface OngoingCall {
   participants: Participants | null;
   isRinging: boolean;
+  roomId?: string;
 }
 
 export interface PeerData {

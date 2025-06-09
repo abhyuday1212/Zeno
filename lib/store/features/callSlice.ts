@@ -13,6 +13,8 @@ const initialState = {
   } as Participants,
 
   isCallEnded: false,
+  isCallActive: false,
+  roomId: null,
 };
 
 export const callSlice = createSlice({
@@ -31,10 +33,20 @@ export const callSlice = createSlice({
       state.isCallEnded = action.payload;
     },
 
+    setIsCallActive: (state, action: PayloadAction<boolean>) => {
+      state.isCallActive = action.payload;
+    },
+
+    setRoomId: (state, action: PayloadAction<string>) => {
+      state.roomId = action.payload;
+    },
+
     resetCallState: (state) => {
       state.ongoingCall = initialState.ongoingCall;
       state.participants = initialState.participants;
       state.isCallEnded = initialState.isCallEnded;
+      state.isCallActive = initialState.isCallActive;
+      state.roomId = initialState.roomId;
     },
   },
 });
@@ -44,6 +56,8 @@ export const {
   setOngoingCall,
   resetCallState,
   setIsCallEnded,
+  setIsCallActive,
+  setRoomId,
 } = callSlice.actions;
 
 export default callSlice.reducer;
