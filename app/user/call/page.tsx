@@ -1,19 +1,16 @@
 "use client";
 
-import ConnectionStatus from "@/components/SocketStatus";
 import CurrentProfileHeader from "@/components/user/CurrentProfileHeader";
-import VideoCall from "@/components/user/VideoCall";
+import ListOnlineUsers from "@/components/user/ListOnlineUsers";
 import { FunctionComponent } from "react";
 
 const VideoCallHome: FunctionComponent = () => {
   return (
-    <div className="red">
-      {/* This is video call page. */}
-      {/* Create a You section here */}
-      <CurrentProfileHeader />
-      <ConnectionStatus />
-      {/* <CallNotification /> */}
-      <VideoCall />
+    <div className="flex flex-col items-center w-full">
+      <div className="w-full max-w-7xl mx-auto flex flex-col items-center">
+        <CurrentProfileHeader />
+        <ListOnlineUsers />
+      </div>
     </div>
   );
 };
