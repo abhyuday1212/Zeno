@@ -35,6 +35,17 @@ export const socketSlice = createSlice({
       state.onlineUsers = action.payload;
     },
 
+    updateUserVisibility: (
+      state,
+      action: PayloadAction<{ userId: string; isInvisible: boolean }>
+    ) => {
+      state.onlineUsers = state.onlineUsers.map((user) =>
+        user.userId === action.payload.userId
+          ? { ...user, isInvisible: action.payload.isInvisible }
+          : user
+      );
+    },
+
     setLocalStream: (state, action) => {
       state.localStream = action.payload;
     },
@@ -62,6 +73,7 @@ export const {
   setMic,
   setCamera,
   setPeer,
+  updateUserVisibility,
 } = socketSlice.actions;
 
 export default socketSlice.reducer;

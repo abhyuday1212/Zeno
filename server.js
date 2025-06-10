@@ -16,6 +16,8 @@ const handler = app.getRequestHandler();
 
 export let io;
 
+let updateInProgress = false;
+
 app.prepare().then(() => {
     const httpServer = createServer(handler);
 
@@ -27,15 +29,100 @@ app.prepare().then(() => {
 
         // Add User
         socket.on('addNewUser', (nextAuthUser) => {
-            nextAuthUser && !onlineUsers.some(user => user?.userId === nextAuthUser.id) && onlineUsers.push({
-                userId: nextAuthUser.id,
-                socketId: socket.id,
-                profile: nextAuthUser
-            })
+            if (!nextAuthUser) return;
+
+            const existingUserIndex = onlineUsers.findIndex(user => user.userId === nextAuthUser.id);
+
+            if (existingUserIndex !== -1) {
+                // User exists, update their socket ID but preserve visibility status
+                const currentVisibility = onlineUsers[existingUserIndex].isInvisible;
+                onlineUsers[existingUserIndex] = {
+                    userId: nextAuthUser.id,
+                    socketId: socket.id,
+                    profile: nextAuthUser,
+                    isInvisible: currentVisibility
+                };
+            } else {
+                // New user, add them
+                onlineUsers.push({
+                    userId: nextAuthUser.id,
+                    socketId: socket.id,
+                    profile: nextAuthUser,
+                    isInvisible: false // default to visible
+                });
+            }
 
             // send active users
             io.emit('getUsers', onlineUsers);
         })
+
+        // Add this new event handler
+        socket.on('setUserInvisible', (userId) => {
+            console.log(`Setting user ${userId} to invisible`);
+            if (updateInProgress) {
+                setTimeout(() => {
+                    socket.emit('retryVisibilityUpdate', { userId, makeInvisible: true });
+                }, 200);
+                return;
+            }
+
+            updateInProgress = true;
+
+            // Find the user in online users list
+            const userIndex = onlineUsers.findIndex(user => user.userId === userId);
+
+            if (userIndex !== -1) {
+                // Update user's visibility status without removing them
+                onlineUsers[userIndex].isInvisible = true;
+
+                // First send confirmation to the specific client to ensure immediate UI update
+                io.emit('getUsers', onlineUsers);
+
+                // Send confirmation to the specific client
+                socket.emit('visibilityUpdated', {
+                    userId,
+                    isInvisible: true
+                });
+
+                // Release the lock after a short delay
+                setTimeout(() => {
+                    updateInProgress = false;
+                }, 100);
+            } else {
+                updateInProgress = false;
+            }
+        });
+
+        socket.on('setUserVisible', (userId) => {
+            console.log(`Setting user ${userId} to visible`);
+
+            // Find the user in online users list
+            const userIndex = onlineUsers.findIndex(user => user.userId === userId);
+
+            if (userIndex !== -1) {
+                // Update user's visibility status
+                onlineUsers[userIndex].isInvisible = false;
+
+                // First send confirmation to the specific client
+                socket.emit('visibilityUpdated', {
+                    userId,
+                    isInvisible: false
+                });
+
+                // Then send updated user list with a slight delay
+                setTimeout(() => {
+                    io.emit('getUsers', onlineUsers);
+                }, 50);
+            }
+        });
+
+        socket.on('retryVisibilityUpdate', (data) => {
+            if (data.makeInvisible) {
+                socket.emit('setUserInvisible', data.userId);
+            } else {
+                socket.emit('setUserVisible', data.userId);
+            }
+        });
 
 
         socket.on('disconnect', () => {

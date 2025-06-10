@@ -9,6 +9,7 @@ import {
   setPeer,
   setSocket,
   updateOnlineUsers,
+  updateUserVisibility,
 } from "../lib/store/features/socketSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useSession } from "next-auth/react";
@@ -209,6 +210,23 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     };
   }, [userId, dispatch]);
 
+  useEffect(() => {
+    if (!socketRef.current) return;
+
+    const handleVisibilityUpdated = (data) => {
+      console.log("Visibility updated:", data);
+      dispatch(updateUserVisibility(data));
+    };
+
+    socketRef.current.on("visibilityUpdated", handleVisibilityUpdated);
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.off("visibilityUpdated", handleVisibilityUpdated);
+      }
+    };
+  }, [dispatch]);
+
   // set online users
   useEffect(() => {
     if (!socketRef.current || !userId || !session?.user) return;
@@ -216,17 +234,43 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
     socketRef.current.emit("addNewUser", session.user);
 
     const handleGetUsers = (users) => {
+      console.log("Received updated user list:", users);
       dispatch(updateOnlineUsers(users));
+
+      // If the current user is in the list, update local visibility state
+      if (session?.user?.id) {
+        const currentUser = users.find(
+          (user) => user.userId === session.user.id
+        );
+        if (currentUser) {
+          // This will be picked up by the CurrentProfileHeader component
+          dispatch(
+            updateUserVisibility({
+              userId: session.user.id,
+              isInvisible: currentUser.isInvisible || false,
+            })
+          );
+        }
+      }
     };
 
     socketRef.current.on("getUsers", handleGetUsers);
 
+    socketRef.current.on("retryVisibilityUpdate", (data) => {
+      if (data.makeInvisible) {
+        socketRef.current.emit("setUserInvisible", data.userId);
+      } else {
+        socketRef.current.emit("setUserVisible", data.userId);
+      }
+    });
+
     return () => {
       if (socketRef.current) {
         socketRef.current.off("getUsers", handleGetUsers);
+        socketRef.current.off("retryVisibilityUpdate");
       }
     };
-  }, [userId, session, dispatch]);
+  }, [dispatch, session?.user?.id]);
 
   const handleRemoteHangup = useCallback(() => {
     console.log("Remote user hung up");

@@ -95,48 +95,71 @@ const ListOnlineUsers = () => {
   return (
     <div className="w-full h-full">
       <h1 className="text-xl font-bold mb-4">Online Friends🤝 </h1>
+      {onlineUsers && onlineUsers.length > 0 ? (
+        <>
+          {onlineUsers &&
+            onlineUsers
+              .filter((user) => !user.isInvisible) // Filter out invisible users
+              .map((user) => {
+                // Don't show the current user in the list
+                if (user.profile.id === session.user?.id) return null;
 
-      {onlineUsers &&
-        onlineUsers.map((user) => {
-          // Don't show the current user in the list
-          if (user.profile.id === session.user?.id) return null;
+                return (
+                  <div
+                    key={user.userId}
+                    className="flex items-center justify-between p-2 mb-1 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+                  >
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <Avatar
+                        src={user.profile?.image}
+                        firstLetter={
+                          user.profile?.name.split(" ")[0].split("")[0]
+                        }
+                      />
+                      <div className="flex flex-col items-baseline cursor-pointer overflow-hidden">
+                        <h1 className="font-medium truncate w-full">
+                          {user.profile?.name}
+                        </h1>
+                        <i className="text-sm text-gray-500 truncate w-full">
+                          {user.profile?.email}
+                        </i>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleStartCall(user)}
+                      className="bg-green-500 hover:bg-green-600 text-white p-4 sm:p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105 flex items-center justify-center flex-shrink-0 ml-2"
+                    >
+                      <Phone size={16} className="sm:size-[20px]" />
+                    </button>
 
-          return (
-            <div
-              key={user.userId}
-              className="flex items-center justify-between p-2 mb-1 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
-            >
-              <div className="flex items-center gap-2 overflow-hidden">
-                <Avatar
-                  src={user.profile?.image}
-                  firstLetter={user.profile?.name.split(" ")[0].split("")[0]}
-                />
-                <div className="flex flex-col items-baseline cursor-pointer overflow-hidden">
-                  <h1 className="font-medium truncate w-full">
-                    {user.profile?.name}
-                  </h1>
-                  <i className="text-sm text-gray-500 truncate w-full">
-                    {user.profile?.email}
-                  </i>
-                </div>
-              </div>
-              <button
-                onClick={() => handleStartCall(user)}
-                className="bg-green-500 hover:bg-green-600 text-white p-4 sm:p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105 flex items-center justify-center flex-shrink-0 ml-2"
-              >
-                <Phone size={16} className="sm:size-[20px]" />
-              </button>
-
-              {isCallActive && (
-                <CallPopup
-                  name={user.profile?.name || "Unknown User"}
-                  email={user.profile?.email}
-                  onEndCall={handleEndCall}
-                />
-              )}
+                    {isCallActive && (
+                      <CallPopup
+                        name={user.profile?.name || "Unknown User"}
+                        email={user.profile?.email}
+                        onEndCall={handleEndCall}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+          {/* Show message when all users are filtered out (they're all invisible or just the current user) */}
+          {onlineUsers.filter(
+            (user) => !user.isInvisible && user.profile.id !== session.user?.id
+          ).length === 0 && (
+            <div className="p-4 text-center border rounded-lg bg-gray-50 dark:bg-gray-800">
+              <p className="text-gray-500 dark:text-gray-400">
+                No friends are currently online
+              </p>
             </div>
-          );
-        })}
+          )}
+        </>
+      ) : (
+        <div className="p-4 text-center border rounded-lg bg-gray-50 dark:bg-gray-800">
+          <p className="text-gray-500 dark:text-gray-400">
+            No friends are currently online
+          </p>
+        </div>
+      )}
     </div>
   );
 };

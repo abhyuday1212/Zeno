@@ -5,6 +5,7 @@ export type SocketUser = {
   userId: string;
   socketId: string;
   profile: User;
+  isInvisible: boolean;
 };
 
 export interface Participants {
