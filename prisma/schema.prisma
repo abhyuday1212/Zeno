@@ -84,7 +84,6 @@ datasource db {
 // }
 
 // -------------------------------
-
 model Account {
   id                String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   type              String
@@ -119,6 +118,49 @@ model Session {
   userId       String   @db.Uuid
 }
 
+model FriendRequest {
+  id     String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status FriendRequestStatus @default(PENDING)
+
+  // The user who sent the request
+  senderId String @db.Uuid
+  sender   User   @relation("SentFriendRequests", fields: [senderId], references: [id], onDelete: Cascade)
+
+  // The user who received the request
+  receiverId String @db.Uuid
+  receiver   User   @relation("ReceivedFriendRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Prevent duplicate friend requests between same users
+  @@unique([senderId, receiverId])
+  @@map("FriendRequest")
+}
+
+model Friendship {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  user1Id String @db.Uuid
+  user1   User   @relation("User1Friendships", fields: [user1Id], references: [id], onDelete: Cascade)
+
+  user2Id String @db.Uuid
+  user2   User   @relation("User2Friendships", fields: [user2Id], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  // Ensure friendship uniqueness (regardless of order)
+  @@unique([user1Id, user2Id])
+  @@map("Friendship")
+}
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
 model User {
   id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name            String?
@@ -132,13 +174,16 @@ model User {
   accounts Account[]
   sessions Session[]
 
-  createdAt   DateTime @default(now())
-  lastUpdated DateTime @updatedAt
+  // Friend request relations
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+
+  // Friendship relations
+  user1Friendships Friendship[] @relation("User1Friendships")
+  user2Friendships Friendship[] @relation("User2Friendships")
+
+  createdAt   DateTime     @default(now())
+  lastUpdated DateTime     @updatedAt
 
   @@map("User")
-}
-
-enum UserType {
-  Admin
-  user
 }
