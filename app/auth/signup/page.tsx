@@ -18,17 +18,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signUpSchema } from "@/lib/zod";
-import {
-  handleCredentialsSignin,
-  handleSignUp,
-} from "@/app/actions/authActions";
+
+import { handleSignUp } from "@/app/actions/authActions";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-// import Navbar from "@/components/navbar";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function SignUp() {
   const [globalError, setGlobalError] = useState("");
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -42,25 +42,43 @@ export default function SignUp() {
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
     try {
+      setGlobalError("");
+
       const result: ServerActionResponse = await handleSignUp({
         name: values.name,
         email: values.email,
         password: values.password,
         confirmPassword: values.confirmPassword,
       });
+
       if (result.success) {
         console.log("Account created successfully.");
-        const valuesForSignin = {
-          email: values.email,
-          password: values.password,
-        };
-        await handleCredentialsSignin(valuesForSignin);
+        try {
+          const result = await signIn("credentials", {
+            email: values.email,
+            password: values.password,
+            redirect: false,
+          });
+
+          if (result?.error) {
+            setGlobalError("Invalid email or password.");
+          } else if (result?.ok) {
+            router.push("/");
+          }
+        } catch (error) {
+          console.log("An unexpected error occurred. Error: ", error);
+          setGlobalError("Something went wrong. Please try again.");
+        }
       } else {
-        setGlobalError(result.message);
+        setTimeout(() => {
+          setGlobalError(result.message);
+        }, 3000);
       }
     } catch (error) {
       console.log("An unexpected error occurred. Error: ", error);
-      setGlobalError("An unexpected error occurred. Please try again.");
+      setTimeout(() => {
+        setGlobalError("An unexpected error occurred. Please try again.");
+      }, 3000);
     }
   };
 

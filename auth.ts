@@ -1,22 +1,8 @@
-import NextAuth from "next-auth";
-import prisma from "@/db/index";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import type { Adapter } from "next-auth/adapters";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./auth.config";
+import type { NextAuthOptions } from "next-auth";
 
-// Check the use of SessionStrategy in the following import later
-// import { SessionStrategy } from "next-auth";
+export const getServerAuthSession = () => getServerSession(authOptions);
 
-import authConfig from "./auth.config";
-
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma) as Adapter,
-  session: {
-    strategy: "jwt",
-    // strategy: "jwt" as SessionStrategy,
-    // maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  jwt: {
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  ...authConfig,
-});
+// For server-side sign in/out (if needed)
+export { signIn, signOut } from "next-auth/react";

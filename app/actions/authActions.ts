@@ -1,47 +1,26 @@
+// authActions.ts
 "use server";
 
-import { signIn, signOut } from "@/auth";
 import { signUpSchema } from "@/lib/zod";
-import { AuthError } from "next-auth";
 import bcryptjs from "bcryptjs";
-import  prisma  from "@/db/index";
+import prisma from "@/db/index";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/auth.config";
 
-export async function handleCredentialsSignin({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) {
-  try {
-    await signIn("credentials", { email, password, redirectTo: "/" });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return {
-            message: "Invalid credentials",
-          };
-        default:
-          return {
-            message: "Something went wrong.",
-          };
-      }
-    }
-    throw error;
-  }
-}
+// For credentials signin, we'll handle it differently since we can't use signIn from server actions
 
+// For OAuth, we'll redirect to the auth API routes
 export async function handleGithubSignin() {
-  await signIn("github", { redirectTo: "/" });
+  redirect("/api/auth/signin/github");
 }
 
 export async function handleGoogleSignin() {
-  await signIn("google", { redirectTo: "/" });
+  redirect("/api/auth/signin/google");
 }
 
 export async function handleSignOut() {
-  await signOut();
+  redirect("/api/auth/signout");
 }
 
 export async function handleSignUp({
@@ -62,6 +41,7 @@ export async function handleSignUp({
       password,
       confirmPassword,
     });
+
     if (!parsedCredentials.success) {
       return { success: false, message: "Invalid data." };
     }
@@ -98,4 +78,9 @@ export async function handleSignUp({
       message: "An unexpected error occurred. Please try again.",
     };
   }
+}
+
+// Server-side function to get current session
+export async function getCurrentSession() {
+  return await getServerSession(authOptions);
 }

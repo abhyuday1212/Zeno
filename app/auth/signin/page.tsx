@@ -20,16 +20,12 @@ import { z } from "zod";
 
 import { signInSchema } from "@/lib/zod";
 import LoadingButton from "@/components/loading-button";
-import {
-  handleCredentialsSignin,
-  handleGithubSignin,
-  handleGoogleSignin,
-} from "@/app/actions/authActions";
 import { useState, useEffect, Suspense } from "react";
 import ErrorMessage from "@/components/error-message";
 import { Button } from "@/components/ui/button";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 import Link from "next/link";
 // import Navbar from "@/components/navbar";
@@ -47,7 +43,9 @@ function SignInForm() {
         case "OAuthAccountNotLinked":
           setGlobalError("Please use your email and password to sign in.");
           break;
-
+        case "CredentialsSignin":
+          setGlobalError("Invalid email or password.");
+          break;
         default:
           setGlobalError("An unexpected error occurred. Please try again.");
       }
@@ -65,19 +63,38 @@ function SignInForm() {
 
   const onSubmit = async (values: z.infer<typeof signInSchema>) => {
     try {
-      const result = await handleCredentialsSignin({
-        email: values.email || "",
-        password: values.password || "",
+      const result = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
       });
-      if (result?.message) {
-        setGlobalError(result.message);
+
+      if (result?.error) {
+        setGlobalError("Invalid email or password.");
+      } else if (result?.ok) {
+        router.push("/");
       }
     } catch (error) {
       console.log("An unexpected error occurred. Error: ", error);
+      setGlobalError("Something went wrong. Please try again.");
     }
   };
 
-  // const { data: session, status } = useSession();
+  const handleGithubSignin = async () => {
+    try {
+      await signIn("github", { callbackUrl: "/" });
+    } catch (error) {
+      setGlobalError("Failed to sign in with GitHub.");
+    }
+  };
+
+  const handleGoogleSignin = async () => {
+    try {
+      await signIn("google", { callbackUrl: "/" });
+    } catch (error) {
+      setGlobalError("Failed to sign in with Google.");
+    }
+  };
 
   return (
     <div className="pt-16 h-screen grow flex items-center justify-center p-4">

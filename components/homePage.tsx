@@ -3,7 +3,8 @@ import { Card } from "@/components/ui/card";
 import Navbar from "@/components/navbar";
 import { Printer, FileText, Clock, MapPin, IndianRupee } from "lucide-react";
 import Link from "next/link";
-import { auth } from "@/auth";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/auth.config";
 
 const services = [
   {
@@ -24,7 +25,7 @@ const services = [
 ];
 
 export default async function Home() {
-  const session = await auth();
+  const session = await getServerSession(authOptions);
   console.log(session);
 
   return (

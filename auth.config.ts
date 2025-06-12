@@ -1,24 +1,27 @@
 //auth.config.ts
-
-import Credentials from "next-auth/providers/credentials";
-import Github from "next-auth/providers/github";
+import { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { signInSchema } from "./lib/zod";
 import prisma from "@/db/index";
 import bcryptjs from "bcryptjs";
-import { NextAuthConfig } from "next-auth";
+
 const publicRoutes = ["/auth/signin", "/auth/signup", "/"];
 const authRoutes = ["/auth/signin", "/auth/signup"];
 
 // const TOKEN_SALT = process.env.NEXTAUTH_SALT;
 
-export default {
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
-    Github({
+    GithubProvider({
       clientId: process.env.GITHUB_ID || "",
       clientSecret: process.env.GITHUB_SECRET || "",
       allowDangerousEmailAccountLinking: true,
     }),
+
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
@@ -26,7 +29,9 @@ export default {
       // pkce: true,
       // checks: ["none"],
     }),
-    Credentials({
+
+    CredentialsProvider({
+      name: "credentials",
       credentials: {
         email: { label: "Email", type: "email", placeholder: "Email" },
         password: {
@@ -37,6 +42,8 @@ export default {
       },
 
       async authorize(credentials) {
+        if (!credentials) return null;
+
         // Validate credentials
         const parsedCredentials = signInSchema.safeParse(credentials);
         if (!parsedCredentials.success) {
@@ -85,33 +92,19 @@ export default {
       },
     }),
   ],
+
   secret: process.env.NEXTAUTH_SECRET || "secr3t",
-  trustHost: true,
+
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+
   callbacks: {
-    authorized({ request: { nextUrl }, auth }) {
-      const { pathname } = nextUrl;
-      const isLoggedIn = !!auth?.user;
-
-      // Allow access to public routes for all users
-      if (
-        publicRoutes.includes(pathname) ||
-        (authRoutes.includes(pathname) && !isLoggedIn)
-      ) {
-        return true;
-      }
-
-      // Redirect logged-in users away from auth routes
-      // if (authRoutes.includes(pathname) && isLoggedIn) {
-      //   return Response.redirect(new URL("/", nextUrl));
-      // }
-      if (authRoutes.includes(pathname) && isLoggedIn) {
-        return Response.redirect(new URL("/", nextUrl));
-      }
-
-      // Allow access if the user is authenticated
-      return isLoggedIn;
-    },
-
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
@@ -157,4 +150,4 @@ export default {
   pages: {
     signIn: "/auth/signin",
   },
-} satisfies NextAuthConfig;
+};

@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Printer, FileText, MapPin, IndianRupee } from "lucide-react";
 import Link from "next/link";
-import { auth } from "@/auth";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/auth.config";
 
 const services = [
   {
@@ -23,7 +24,7 @@ const services = [
 ];
 
 export default async function UserHome() {
-  const session = await auth();
+   const session = await getServerSession(authOptions);
   console.log(session);
 
   return (
