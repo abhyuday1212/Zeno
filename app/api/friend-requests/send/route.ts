@@ -52,6 +52,7 @@ const handler = async (req: NextRequest) => {
   if (existingFriendship) {
     throw new ApiError(400, "You are already friends");
   }
+  
 
   // Check if friend request already exists
   const existingRequest = await prisma.friendRequest.findFirst({
