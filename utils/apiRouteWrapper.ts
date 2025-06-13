@@ -1,22 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ApiError } from "@/utils/apiErrors"
+import { ApiError } from "@/utils/apiErrors";
 
-export const apiRouteWrapper = (handler: Function) => {
+export function apiRouteWrapper<
+  T extends (req: NextRequest) => Promise<NextResponse> | Promise<any>
+>(handler: T) {
   return async (req: NextRequest) => {
     try {
-      return await handler(req);
-    } catch (error) {
-      console.error("Handler Error:", error);
-      if (error instanceof ApiError) {
-        return NextResponse.json(
-          { error: error.message },
-          { status: error.statusCode }
-        );
+      const result = await handler(req);
+      // If handler returned a NextResponse, just pass it through.
+      if (result instanceof NextResponse) {
+        return result;
       }
-      return NextResponse.json(
-        { error: "Internal Server Error" },
-        { status: 500 }
-      );
+      // Otherwise assume it’s your ApiResponse
+      return NextResponse.json(result);
+    } catch (err: any) {
+      console.error("apiRouteWrapper caught error:", err);
+
+      // Normalize to ApiError
+      const apiError =
+        err instanceof ApiError
+          ? err
+          : new ApiError(500, err.message || "Internal Server Error");
+
+      const payload = {
+        status: false,
+        message: apiError.message,
+        data: null,
+      };
+
+      return NextResponse.json(payload, { status: apiError.statusCode });
     }
   };
-};
+}
