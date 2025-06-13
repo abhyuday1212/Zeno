@@ -49,39 +49,98 @@ datasource db {
 //-----------
 // One to Many
 
-// User 2 can have many posts
+// one user can have many posts.
+
+/**
+ * Explanation:
+ * In User, the posts field establishes a one-to-many relationship: one user can have many posts.
+ * In Post, the userId is a foreign key pointing to the User's id.
+ * The @relation(...) decorator connects the Post to the User via userId.
+ * No @unique on userId, so multiple posts can share the same userId.
+ * // -------- xxxxxxxxx ---------
+ * User
+ * -----
+ * id    (PK)
+ * email
+ * posts → [Post, Post, Post, ...]
+ * Post
+ * -----
+ * id     (PK)
+ * title
+ * userId (FK) → User.id
+ */
 // model User2 {
-//   id    String  @id @default(uuid())
-//   email String  @unique
-//   posts Post2[]
+//   id    String @id @default(uuid())
+//   email String @unique
+//   posts Post[]
 // }
 
-//Every Post can be related to the same user
-// model Post2 {
-//   title String?
-
-//   userId  String  @unique
-//   user    User1   @relation(fields: [userId], references: [id])
-//   User2   User2?  @relation(fields: [user2Id], references: [id])
-//   user2Id String?
+// model Post {
+//   id     String  @id @default(uuid())
+//   title  String?
+//   userId String
+//   user   User2   @relation(fields: [userId], references: [id])
 // }
 
 //------------------Many to Many
 // Many different users can have many different posts
-// model Post3 {
-//   id String?
+/**
+ * Explanation:
+ * What This Models:
+ * A Post can have many Tags (e.g., #fun, #news, #AI)
+ * A Tag can be used in many Posts
+ * This creates a many-to-many relationship.
+ * // ---------- xxxxx ----------
+ * How It Works:
+ * Prisma automatically creates a join table behind the scenes (e.g., PostToTag) to manage this relationship.
+ * The @relation("PostTags") just names the relationship to make both sides reference the same one (optional but good for clarity).
+ */
 
-//   title String?
-//   tags  Tag3[]
-// }
+/**
+ * Is it important to save array of posts in the tag table ?
+ * // Ans: No, it's not strictly necessary, but yes, it is recommended for a bidirectional relationship
+ * You're declaring a bidirectional many-to-many relation:
+ * Post.tags gives you all tags for a post
+ * Tag.posts gives you all posts that have this tag
+ * ✅ Even if you don’t often query from Tag to Post, you should keep both sides if:
+ * You want Prisma to auto-generate the join table (PostTags)
+ * You want type safety and ease of querying in both directions
+ * // ------- xxxxxxxx --------
+ * // Alternate
+ * If you really only want to query from Post to Tag and avoid the reverse (Tag to Post), you could use a custom join table, like this:
+ * // -----
+ * model Post {
+ * id        String     @id @default(uuid())
+ * title     String?
+ * postTags  PostTag[]
+ * }
+ * model Tag {
+ * id        String     @id @default(uuid())
+ * name      String?
+ * postTags  PostTag[]
+ * }
+ * model PostTag {
+ * post   Post  @relation(fields: [postId], references: [id])
+ * postId String
+ * tag    Tag   @relation(fields: [tagId], references: [id])
+ * tagId String
+ * @@id([postId, tagId])
+ * }
+ */
 
-// Many different can have many differet posts
-// model Tag3 {
-//   id   String?
-//   name String?
+model Post {
+  id    String  @id @default(uuid())
+  title String?
 
-//   posts Post3[]
-// }
+  tags Tag[] @relation("PostTags")
+}
+
+model Tag {
+  id   String  @id @default(uuid())
+  name String?
+
+  posts Post[] @relation("PostTags")
+}
 
 // -------------------------------
 model Account {
@@ -182,8 +241,8 @@ model User {
   user1Friendships Friendship[] @relation("User1Friendships")
   user2Friendships Friendship[] @relation("User2Friendships")
 
-  createdAt   DateTime     @default(now())
-  lastUpdated DateTime     @updatedAt
+  createdAt   DateTime @default(now())
+  lastUpdated DateTime @updatedAt
 
   @@map("User")
 }
