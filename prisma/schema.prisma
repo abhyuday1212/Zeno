@@ -128,19 +128,19 @@ datasource db {
  * }
  */
 
-model Post {
-  id    String  @id @default(uuid())
-  title String?
+// model Post {
+//   id    String  @id @default(uuid())
+//   title String?
 
-  tags Tag[] @relation("PostTags")
-}
+//   tags Tag[] @relation("PostTags")
+// }
 
-model Tag {
-  id   String  @id @default(uuid())
-  name String?
+// model Tag {
+//   id   String  @id @default(uuid())
+//   name String?
 
-  posts Post[] @relation("PostTags")
-}
+//   posts Post[] @relation("PostTags")
+// }
 
 // -------------------------------
 model Account {
