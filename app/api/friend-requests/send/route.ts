@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiRouteWrapper } from "@/utils/apiRouteWrapper";
 import { PrismaClient } from "@prisma/client";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/auth.config";
 const prisma = new PrismaClient();
 import { ApiError } from "@/utils/apiErrors";
 import { ApiResponse } from "@/utils/apiResponse";
@@ -14,7 +15,7 @@ import { ApiResponse } from "@/utils/apiResponse";
 4. Create friend request
  */
 const handler = async (req: NextRequest) => {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
     throw new ApiError(401, "Unauthorized");
