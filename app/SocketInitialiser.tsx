@@ -14,7 +14,6 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { useSession } from "next-auth/react";
 import { OngoingCall, Participants, PeerData } from "@/types/index";
 import {
-  resetCallState,
   setIsCallActive,
   setIsCallEnded,
   setOngoingCall,
@@ -275,7 +274,7 @@ const SocketInitializer = ({ children }: { children: ReactNode }) => {
 
     const handleCallCancelled = (receivedParticipants) => {
       console.log("Call was cancelled by caller");
-
+      console.log("Received Participants: ", receivedParticipants);
       // Now you can access both if needed:
       // receivedParticipants - from socket
       // participants - from Redux state

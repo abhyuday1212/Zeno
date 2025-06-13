@@ -88,7 +88,7 @@ const CallNotification = () => {
 
       router.push(`/user/call/${roomId}`);
     },
-    [socket, getMediaStream, dispatch, createPeer]
+    [socket, getMediaStream, dispatch, createPeer, router]
   );
 
   useEffect(() => {

@@ -76,7 +76,9 @@ function SignInForm() {
       }
     } catch (error) {
       console.log("An unexpected error occurred. Error: ", error);
-      setGlobalError("Something went wrong. Please try again.");
+      setTimeout(() => {
+        setGlobalError("Something went wrong. Please try again.");
+      }, 3000);
     }
   };
 
@@ -84,7 +86,10 @@ function SignInForm() {
     try {
       await signIn("github", { callbackUrl: "/" });
     } catch (error) {
-      setGlobalError("Failed to sign in with GitHub.");
+      console.log("Error On Github Signup: ", error);
+      setTimeout(() => {
+        setGlobalError("Failed to sign in with GitHub.");
+      }, 3000);
     }
   };
 
@@ -92,7 +97,10 @@ function SignInForm() {
     try {
       await signIn("google", { callbackUrl: "/" });
     } catch (error) {
-      setGlobalError("Failed to sign in with Google.");
+      console.log("Error On Github Signup: ", error);
+      setTimeout(() => {
+        setGlobalError("Failed to sign in with Google.");
+      }, 3000);
     }
   };
 

@@ -1,7 +1,8 @@
-import { auth } from "@/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth.config";
 
 export default async function Home() {
-  const session = await auth();
+  const session = await getServerSession(authOptions);
   console.log("Frontend Me Load Hua", session);
 
   console.log("Frontend Me Load Hua ID: ", session.user.id);

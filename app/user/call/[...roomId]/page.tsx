@@ -21,8 +21,8 @@ const VideoCallHome = () => {
   console.log("Call page rendering with ID:", roomId);
   const isCallEnded = useAppSelector((state) => state.callContext.isCallEnded);
   // Get current state
-  const peer = useAppSelector((state) => state.socketContext.peer);
-  const ongoingCall = useAppSelector((state) => state.callContext.ongoingCall);
+  // const peer = useAppSelector((state) => state.socketContext.peer);
+  // const ongoingCall = useAppSelector((state) => state.callContext.ongoingCall);
 
   // Sync the room ID from URL to Redux if needed
   useEffect(() => {

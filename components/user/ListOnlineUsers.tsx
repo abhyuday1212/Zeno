@@ -14,6 +14,7 @@ import {
 import { useMediaStream } from "@/hooks/useMediaStream";
 import { Phone } from "lucide-react";
 import CallPopup from "./callPopup";
+import { AddFriendBtn } from "./AddFriendBtn";
 
 const ListOnlineUsers = () => {
   const dispatch = useAppDispatch();
@@ -92,10 +93,23 @@ const ListOnlineUsers = () => {
     [currentSocketUser, socket, dispatch, getMediaStream]
   );
 
+  // function setShowFriendModal(status: boolean) {
+  //   return !status;
+  // }
+
   return (
     <div className="w-full h-full">
-      <h1 className="text-xl font-bold mb-4">Online Friends🤝 </h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-bold">Online Friends🤝</h1>
+        {/* <button
+          onClick={() => setShowFriendModal(true)}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm font-medium"
+        >
+          Add Friends
+        </button> */}
 
+        <AddFriendBtn />
+      </div>
       {onlineUsers &&
         onlineUsers.map((user) => {
           // Don't show the current user in the list

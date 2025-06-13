@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ApiError } from "./apiErrors.js";
+import { ApiError } from "@/utils/apiErrors"
 
 export const apiRouteWrapper = (handler: Function) => {
   return async (req: NextRequest) => {

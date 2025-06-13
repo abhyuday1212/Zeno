@@ -7,7 +7,6 @@ import { setCamera, setMic } from "@/lib/store/features/socketSlice";
 import { MdMic, MdMicOff, MdVideocam, MdVideocamOff } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import {
-  resetCallState,
   setIsCallEnded,
   setOngoingCall,
 } from "@/lib/store/features/callSlice";
