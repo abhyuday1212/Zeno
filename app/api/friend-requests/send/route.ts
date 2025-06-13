@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiRouteWrapper } from "@/utils/apiRouteWrapper";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth.config";
-const prisma = new PrismaClient();
+import prisma from "@/db/index";
 import { ApiError } from "@/utils/apiErrors";
 import { ApiResponse } from "@/utils/apiResponse";
 
