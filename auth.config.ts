@@ -3,7 +3,6 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { signInSchema } from "./lib/zod";
 import prisma from "@/db/index";
 import bcryptjs from "bcryptjs";
@@ -14,7 +13,6 @@ const authRoutes = ["/auth/signin", "/auth/signup"];
 // const TOKEN_SALT = process.env.NEXTAUTH_SALT;
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID || "",
