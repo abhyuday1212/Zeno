@@ -43,7 +43,7 @@ async function getUsers(searchTerm: string = "", page: number = 1) {
         ? process.env.NEXT_PUBLIC_APP_URL
         : process.env.DEPLOYED_PUBLIC_APP_URL;
     const response = await axios.get(
-      `${baseUrl}/api/user/list?pagination=true&sizePerPage=3&page=${page}&search=${encodeURIComponent(
+      `${baseUrl}/api/user/list?sizePerPage=3&page=${page}&search=${encodeURIComponent(
         searchTerm
       )}`
     );
