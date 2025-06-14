@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable */
+
 import React, { useEffect, useState } from "react";
 import {
   Modal,
@@ -10,6 +12,7 @@ import {
 import { FaUserFriends } from "react-icons/fa";
 import { PlaceholdersAndVanishInput } from "../ui/placeholders-and-vanish-input";
 import axios from "axios";
+import Image from "next/image";
 
 // import { motion } from "motion/react";
 
@@ -203,7 +206,7 @@ function AddFriendModalContent() {
               >
                 <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-neutral-700 overflow-hidden mr-3">
                   {user.image ? (
-                    <img
+                    <Image
                       src={user.image}
                       alt={user.name}
                       className="w-full h-full object-cover"

@@ -30,7 +30,8 @@ const handler = async (req: NextRequest) => {
   const skip = (page - 1) * sizePerPage;
 
   // Base query filter
-  let whereClause: any = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const whereClause: any = {
     // Don't include the current user in results
     id: { not: session.user.id },
   };
