@@ -194,7 +194,7 @@ model FriendRequest {
 
   // Prevent duplicate friend requests between same users
   @@unique([senderId, receiverId])
-  @@map("FriendRequest")
+  // @@map("FriendRequest")
 }
 
 model Friendship {
@@ -210,7 +210,7 @@ model Friendship {
 
   // Ensure friendship uniqueness (regardless of order)
   @@unique([user1Id, user2Id])
-  @@map("Friendship")
+  // @@map("Friendship")
 }
 
 enum FriendRequestStatus {
@@ -244,5 +244,5 @@ model User {
   createdAt   DateTime @default(now())
   lastUpdated DateTime @updatedAt
 
-  @@map("User")
+  // @@map("User")
 }
