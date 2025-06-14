@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiRouteWrapper } from "@/utils/apiRouteWrapper";
+import { ApiError } from "@/utils/apiErrors";
+import { ApiResponse } from "@/utils/apiResponse";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth.config";
 import prisma from "@/db/index";
-import { ApiError } from "@/utils/apiErrors";
-import { ApiResponse } from "@/utils/apiResponse";
 
 /**
  Steps to send a friend request:
