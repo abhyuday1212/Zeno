@@ -1,10 +1,10 @@
 
 
 # App Architecture
-![Architecture](aseets/architectureImage.jpg)
+![Architecture](assets\architectureImage.jpg)
 
 # STUN Servers
-![StunServers](aseets/StunArchitecture.png)
+![StunServers](assets\StunArchitecture.png)
 
 # TURN Servers
-![TurnServers](aseets/TurnArchitecture.png)
+![TurnServers](assets\TurnArchitecture.png)
