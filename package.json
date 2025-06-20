@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
-    "build": "prisma generate &&  cross-env NODE_ENV=production next build",
-    "start": "NODE_ENV=production node server.js",
+    "build": "prisma generate && cross-env NODE_ENV=production next build",
+    "start": "npm run build && cross-env NODE_ENV=production node server.js",
     "lint": "next lint",
     "check-database": "node -r dotenv/config lib/prisma.ts && node -r dotenv/config lib/prisma.ts testDatabaseConnection()"
   },
