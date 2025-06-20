@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
 @import 'tailwindcss';
 
 @plugin 'tailwindcss-animate';
@@ -6,6 +8,14 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-serif: 'Playfair Display', Georgia, serif;
+  --font-family-mono: 'Fira Code', 'Courier New', monospace;
+
+  /* Custom font families */
+  --font-family-heading: 'Playfair Display', serif;
+  --font-family-body: 'Inter', sans-serif;
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -252,7 +262,7 @@
 
 @layer utilities {
   body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: theme(--font-family-body);
   }
 }
 

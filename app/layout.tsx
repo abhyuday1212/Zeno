@@ -35,6 +35,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning={true}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        cz-shortcut-listen="true"
       >
         {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
         <Providers session={session}>

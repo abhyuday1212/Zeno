@@ -191,10 +191,10 @@ model FriendRequest {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  // @@map("FriendRequest")
 
   // Prevent duplicate friend requests between same users
   @@unique([senderId, receiverId])
-  // @@map("FriendRequest")
 }
 
 model Friendship {
@@ -207,10 +207,10 @@ model Friendship {
   user2   User   @relation("User2Friendships", fields: [user2Id], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+  // @@map("Friendship")
 
   // Ensure friendship uniqueness (regardless of order)
   @@unique([user1Id, user2Id])
-  // @@map("Friendship")
 }
 
 enum FriendRequestStatus {
@@ -245,4 +245,23 @@ model User {
   lastUpdated DateTime @updatedAt
 
   // @@map("User")
+}
+
+model NewsletterSubscription {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String   @unique
+  isSubscribed Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ContactUs {
+  id          String   @id @default(uuid())
+  name        String
+  phoneNumber String
+  email       String
+  subject     String
+  message     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

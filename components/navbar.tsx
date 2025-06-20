@@ -35,11 +35,11 @@ export default async function Navbar() {
               Call
             </Button>
           </Link>
-          {/* <Link href="/user/status">
+          <Link href="/user/friends">
             <Button variant="ghost" className="text-bold-text">
-              Waiting Queue
+              Friends
             </Button>
-          </Link> */}
+          </Link>
 
           <div className="flex items-center justify-start gap-2 ml-1">
             <ModeToggle />
@@ -61,7 +61,7 @@ export default async function Navbar() {
       <div className="flex h-16 items-center max-w-7xl mx-auto">
         <Link
           href={session ? "/user/home" : "/"}
-          className="flex items-center space-x-2"
+          className="flex items-center space-x-1 px-2 sm:px-4 lg:px-6"
         >
           <FaVideo className="h-6 w-6 text-bold-text" />
           <span className="text-xl font-bold text-bold-text">Zeno</span>
@@ -73,20 +73,6 @@ export default async function Navbar() {
         </div>
 
         {/* Mobile Navigation */}
-        {/* <div className="ml-auto md:hidden">
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <div className="flex flex-col space-y-4 mt-8">
-                <NavItems />
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div> */}
       </div>
     </nav>
   );
