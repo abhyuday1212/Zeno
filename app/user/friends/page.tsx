@@ -186,6 +186,8 @@ export default function FriendsPage() {
           <Image
             src={request.avatar}
             alt={request.name}
+            width={150}
+            height={150}
             className="w-16 h-16 rounded-full object-cover border-2 border-background shadow-sm"
           />
           <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-lime-500 border-2 border-background rounded-full"></div>

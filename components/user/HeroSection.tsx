@@ -1,11 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Button } from "@/components/ui/button";
 import { Video, Users, MessageSquare, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
+  const router = useRouter();
+
+  function handleVideoCallClick() {
+    router.push("/user/call");
+  }
 
   useEffect(() => {
     setIsVisible(true);
@@ -48,6 +54,7 @@ export default function HeroSection() {
           } px-4`}
         >
           <Button
+            onClick={handleVideoCallClick}
             size="lg"
             className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-indigo-600 hover:to-indigo-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-full hover:scale-105 transition-all duration-300 group glow-blue"
           >
