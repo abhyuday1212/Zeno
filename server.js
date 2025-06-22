@@ -45,8 +45,8 @@ nextApp.prepare().then(() => {
         })
     );
 
-    expressApp.use(express.json());
-    expressApp.use(express.urlencoded({ extended: true }));
+    // expressApp.use(express.json());
+    // expressApp.use(express.urlencoded({ extended: true }));
 
     expressApp.use('/', (req, res) => {
         return nextHandler(req, res);

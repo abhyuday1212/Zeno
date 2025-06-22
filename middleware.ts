@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 
 export default withAuth(
   function middleware(req) {
-    // You can add additional middleware logic here if needed
     return NextResponse.next();
   },
   {
@@ -27,7 +26,7 @@ export default withAuth(
         // Require authentication for protected routes
         if (
           pathname.startsWith("/user/") ||
-          pathname.startsWith("/partner/") ||
+          // pathname.startsWith("/partner/") ||
           pathname.startsWith("/admin/")
         ) {
           return !!token;
@@ -42,7 +41,15 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|.*\\.png$).*)",
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes) <- This is the key fix!
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - Files with extensions (.png, .jpg, etc.)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.).*)",
     "/user/:path*",
     "/partner/:path*",
     "/admin/:path*",
