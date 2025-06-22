@@ -23,14 +23,14 @@ const handler = async () => {
     },
   });
 
-  if (!requests || requests.length === 0) {
-    return NextResponse.json(
-      new ApiResponse(404, null, "No friend requests received")
-    );
-  }
-
   return NextResponse.json(
-    new ApiResponse(200, requests, "User data received successfully")
+    new ApiResponse(
+      200,
+      requests,
+      requests.length > 0
+        ? "Friend requests retrieved successfully"
+        : "No pending friend requests found"
+    )
   );
 };
 

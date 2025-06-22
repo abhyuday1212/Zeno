@@ -20,13 +20,20 @@ const handler = async (req: NextRequest) => {
     throw new ApiError(401, "Unauthorized");
   }
 
-  const { receiverId } = await req.json();
+  let body;
+  try {
+    body = await req.json();
+  } catch (error) {
+    console.error("Error parsing request body:", error);
+    throw new ApiError(400, "Invalid request body");
+  }
+
+  const { receiverId } = body;
 
   if (!receiverId) {
     throw new ApiError(400, "Receiver ID is required");
   }
 
-  // Get current session user
   const currentUser = await prisma.user.findUnique({
     where: { email: session.user.email },
   });
@@ -39,7 +46,6 @@ const handler = async (req: NextRequest) => {
     throw new ApiError(400, "You cannot send a friend request to yourself");
   }
 
-  // Check if users are already friends
   const existingFriendship = await prisma.friendship.findFirst({
     where: {
       OR: [
@@ -52,9 +58,7 @@ const handler = async (req: NextRequest) => {
   if (existingFriendship) {
     throw new ApiError(400, "You are already friends");
   }
-  
 
-  // Check if friend request already exists
   const existingRequest = await prisma.friendRequest.findFirst({
     where: {
       OR: [
@@ -69,11 +73,10 @@ const handler = async (req: NextRequest) => {
     throw new ApiError(400, "Friend request already exists");
   }
 
-  // Create friend request
   const friendRequest = await prisma.friendRequest.create({
     data: {
       senderId: currentUser.id,
-      receiverId: receiverId,
+      receiverId,
       status: "PENDING",
     },
     include: {
@@ -83,7 +86,7 @@ const handler = async (req: NextRequest) => {
   });
 
   return NextResponse.json(
-    new ApiResponse(200, friendRequest, "Friend request Send Successfully!")
+    new ApiResponse(200, friendRequest, "Friend request sent successfully!")
   );
 };
 

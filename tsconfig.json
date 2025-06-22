@@ -30,6 +30,6 @@
     ".next/types/**/*.ts",
     "app/projects/ProjectsLoader.js",
     "lib/store/features/sessionInfoSlice.js"
-, "server.js", "socketEvents/socketEvents.js", "utils/logger.js"  ],
+, "server.js", "socketEvents/socketEvents.js", "utils/logger.js", "middleware.ts"  ],
   "exclude": ["node_modules"]
 }

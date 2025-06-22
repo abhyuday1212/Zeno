@@ -22,16 +22,26 @@ const handler = async () => {
       senderId: session?.user?.id,
       status: "PENDING",
     },
+    include: {
+      receiver: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+        },
+      },
+    },
   });
 
-  if (!requests || requests.length === 0) {
-    return NextResponse.json(
-      new ApiResponse(404, null, "No friend requests received")
-    );
-  }
-
   return NextResponse.json(
-    new ApiResponse(200, requests, "User data received successfully")
+    new ApiResponse(
+      200,
+      requests,
+      requests.length > 0
+        ? "Sent friend requests retrieved successfully"
+        : "No sent friend requests found"
+    )
   );
 };
 

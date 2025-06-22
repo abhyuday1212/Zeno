@@ -1,34 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ApiError } from "@/utils/apiErrors";
+import { ApiError } from "./apiErrors";
+import { ApiResponse } from "./apiResponse";
 
-export function apiRouteWrapper<
-  T extends (req: NextRequest) => Promise<NextResponse> | Promise<any>
->(handler: T) {
+export const apiRouteWrapper = (
+  handler: (req: NextRequest) => Promise<NextResponse>
+) => {
   return async (req: NextRequest) => {
     try {
-      const result = await handler(req);
-      // If handler returned a NextResponse, just pass it through.
-      if (result instanceof NextResponse) {
-        return result;
+      console.log(`API Route: ${req.method} ${req.url}`);
+
+      // Don't clone the request - pass the original NextRequest directly
+      // The handler will read the body when needed
+      return await handler(req);
+    } catch (error) {
+      console.error("API Error:", error);
+      console.error(
+        "Error stack:",
+        error instanceof Error ? error.stack : "No stack"
+      );
+
+      if (error instanceof ApiError) {
+        return NextResponse.json(
+          new ApiResponse(error.statusCode, null, error.message),
+          { status: error.statusCode }
+        );
       }
-      // Otherwise assume it’s your ApiResponse
-      return NextResponse.json(result);
-    } catch (err: any) {
-      console.error("apiRouteWrapper caught error:", err);
 
-      // Normalize to ApiError
-      const apiError =
-        err instanceof ApiError
-          ? err
-          : new ApiError(500, err.message || "Internal Server Error");
-
-      const payload = {
-        status: false,
-        message: apiError.message,
-        data: null,
-      };
-
-      return NextResponse.json(payload, { status: apiError.statusCode });
+      // Generic error
+      return NextResponse.json(
+        new ApiResponse(500, null, "Internal server error"),
+        { status: 500 }
+      );
     }
   };
-}
+};
