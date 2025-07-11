@@ -1,4 +1,4 @@
-// authActions.ts
+/* eslint-disable */
 "use server";
 
 import { signUpSchema } from "@/lib/zod";
@@ -62,12 +62,19 @@ export async function handleSignUp({
 
     // hash the password
     const hashedPassword = await bcryptjs.hash(password, 10);
-    await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
+
+    const result = await prisma.$transaction(async (tx) => {
+      // Create the user first
+      const newUser = await tx.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+          userType: "User",
+        },
+      });
+
+      return { user: newUser };
     });
 
     return { success: true, message: "Account created successfully." };

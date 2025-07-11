@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
@@ -6,10 +7,13 @@ import { authOptions } from "@/auth.config";
 import SignOut from "./signOut";
 import { ModeToggle } from "./mode-toggle";
 import { FaVideo } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
-export default async function Navbar() {
+export default function Navbar() {
   // const [open, setOpen] = useState(false);
-  const session = await getServerSession(authOptions);
+  // const session = await getServerSession(authOptions);
+  const { data: session } = useSession();
+  console.log("Navbar session----------------------\n:", session);
 
   const NavItems = () => (
     <>

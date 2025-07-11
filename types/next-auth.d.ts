@@ -9,7 +9,7 @@ declare module "next-auth" {
     userType: string;
     name: string;
     email: string;
-    accessToken?: string;
+    token: string;
   }
   interface Session {
     user: {
@@ -17,10 +17,9 @@ declare module "next-auth" {
       userType: string;
       name: string;
       email: string;
-      accessToken: string;
-      salt: String;
-      image: String | null;
-      picture: String | null;
+      jwtToken: string;
+      image: string | null;
+      picture: string | null;
     };
   }
 }
